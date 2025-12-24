@@ -18,7 +18,7 @@
         .bouton.vert { background-color: #A8E6CF; }
         .bouton.rouge { background-color: #FF8B94; }
 
-        #ecran-raisons { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+        #ecran-raisons { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; position: relative; }
         .liste-raisons { display: flex; flex-direction: column; width: 85%; max-width: 320px; gap: 10px; max-height: 50vh; overflow-y: auto; padding: 5px; }
 
         .item-cause { display: flex; gap: 8px; width: 100%; }
@@ -29,7 +29,7 @@
         #input-nouvelle-cause { flex: 1; padding: 15px; border: 2px solid #eee; border-radius: 12px; outline: none; }
         #btn-ajouter-cause { padding: 0 20px; border: none; background: #eee; border-radius: 12px; font-size: 20px; cursor: pointer; }
 
-        #ecran-confirmation { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; text-align: center; padding: 20px; }
+        #ecran-confirmation { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; text-align: center; padding: 20px; position: relative; }
         .grille { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; max-width: 280px; margin: 15px auto; background: white; padding: 15px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         .pixel { width: 32px; height: 32px; background-color: #eee; border-radius: 8px; font-size: 10px; color: #bbb; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; }
         .pixel.vert { background-color: #A8E6CF !important; color: #4b8a72; }
@@ -39,6 +39,18 @@
         .stat-card { background: white; padding: 15px; border-radius: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.04); text-align: left; }
         .stat-label { display: block; font-size: 10px; color: #999; text-transform: uppercase; margin-bottom: 4px; }
         .stat-valeur { display: block; font-size: 16px; font-weight: 800; color: #333; }
+
+        /* STYLE DE LA FLÈCHE DE RETOUR */
+        .fleche-retour {
+            position: absolute;
+            top: 30px;
+            left: 20px;
+            font-size: 28px;
+            color: #ccc;
+            cursor: pointer;
+            padding: 10px;
+            -webkit-tap-highlight-color: transparent;
+        }
 
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 100; }
         .modal-content { background: white; padding: 30px; border-radius: 30px; width: 80%; max-width: 300px; text-align: center; position: relative; }
@@ -57,6 +69,7 @@
   </div>
 
   <div id="ecran-raisons" class="ecran-accueil cache fondue">
+    <div class="fleche-retour" onclick="retourVersChoix()">←</div>
     <h1 id="titre-raison">Pourquoi ?</h1>
     <div id="container-raisons" class="liste-raisons"></div>
     <div class="zone-ajout">
@@ -66,6 +79,7 @@
   </div>
 
   <div id="ecran-confirmation" class="ecran-accueil cache fondue">
+    <div class="fleche-retour" onclick="retourVersRaisons()">←</div>
     <div class="message-merci">
       <h1>C'est noté !</h1>
       <div class="actions-finales">
@@ -111,6 +125,17 @@
 
   const causesParDefaut = ["🏢 Travail", "❤️ Amour", "🥗 Santé", "🎮 Loisirs", "💰 Argent"];
   let mesCauses = JSON.parse(localStorage.getItem('mesCauses')) || causesParDefaut;
+
+  // --- FONCTIONS DE NAVIGATION (FLÈCHES) ---
+  window.retourVersChoix = function() {
+      document.getElementById('ecran-raisons').classList.add('cache');
+      document.getElementById('ecran-choix').classList.remove('cache');
+  };
+
+  window.retourVersRaisons = function() {
+      document.getElementById('ecran-confirmation').classList.add('cache');
+      document.getElementById('ecran-raisons').classList.remove('cache');
+  };
 
   function obtenirHistorique() {
     const h = localStorage.getItem(`histo-${idMois}`);
