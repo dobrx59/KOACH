@@ -2,23 +2,49 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MoodApp">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3069/3069172.png">
+    
     <title>Mood Tracker</title>
     <style>
-        /* CSS INTÉGRÉ DIRECTEMENT */
-        body, html { margin: 0; padding: 0; height: 100%; font-family: -apple-system, sans-serif; background-color: #f2f2f7; overflow: hidden; }
+        /* Ajustement pour le plein écran total (encoche/barre d'état) */
+        :root {
+            --safe-top: env(safe-area-inset-top);
+        }
+
+        body, html { 
+            margin: 0; padding: 0; height: 100%; 
+            font-family: -apple-system, sans-serif; 
+            background-color: #f2f2f7; 
+            overflow: hidden; 
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         .cache { display: none !important; }
         .fondue { animation: fadeIn 0.6s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* SPLASH SCREEN */
         #splash-screen { position: fixed; inset: 0; background-color: #ffffff; display: flex; align-items: center; justify-content: center; z-index: 5000; opacity: 1; transition: opacity 1s ease-out; }
         .carte-accueil { font-size: 24px; font-weight: 600; color: #1c1c1e; text-align: center; }
         .hidden-splash { opacity: 0 !important; pointer-events: none; }
 
+        /* INTERFACE */
         .ecran-accueil { display: flex; flex-direction: column; height: 100vh; width: 100%; position: relative; align-items: center; justify-content: center; }
-        .bouton-principal { flex: 1; width: 100%; border: none; font-size: 100px; display: flex; align-items: center; justify-content: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        
+        /* On pousse le contenu vers le bas pour ne pas être sous l'heure de l'iPhone */
+        .fleche-retour { position: absolute; top: calc(var(--safe-top) + 15px); left: 20px; font-size: 30px; color: #8e8e93; cursor: pointer; z-index: 10; }
+        
+        .bouton-principal { flex: 1; width: 100%; border: none; font-size: 100px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .bouton-principal.vert { background-color: #A8E6CF; }
         .bouton-principal.rouge { background-color: #FF8B94; }
+
+        #titre-raison { margin-top: var(--safe-top); }
 
         .liste-raisons { display: flex; flex-direction: column; width: 85%; max-width: 350px; gap: 10px; margin-bottom: 15px; }
         .item-cause { display: flex; gap: 8px; width: 100%; }
@@ -29,7 +55,7 @@
         #input-nouvelle-cause { flex: 1; padding: 15px; border-radius: 12px; border: 1px solid #ddd; outline: none; font-size: 16px; }
         #btn-ajouter-cause { padding: 15px; background: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
 
-        .actions-finales { display: flex; gap: 10px; margin-bottom: 20px; }
+        .actions-finales { display: flex; gap: 10px; margin-bottom: 20px; margin-top: var(--safe-top); }
         .bouton-onglet { border: none; padding: 12px 20px; border-radius: 20px; font-size: 14px; font-weight: bold; background: #e5e5ea; color: #8e8e93; cursor: pointer; transition: 0.3s; }
         .actif-vert { background-color: #A8E6CF !important; color: #3d7a63 !important; }
         .actif-rouge { background-color: #FF8B94 !important; color: #8a3d43 !important; }
@@ -44,7 +70,6 @@
         .stat-label { font-size: 10px; color: #999; text-transform: uppercase; display: block; }
         .stat-valeur { font-size: 18px; font-weight: bold; color: #333; }
 
-        .fleche-retour { position: absolute; top: 50px; left: 20px; font-size: 30px; color: #8e8e93; cursor: pointer; z-index: 10; }
         .btn-reset { margin-top: 30px; font-size: 12px; color: #ccaeae; text-decoration: underline; cursor: pointer; }
 
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 6000; }
@@ -76,7 +101,7 @@
     <div id="modal-note" class="modal cache">
         <div class="modal-content fondue">
             <h3 style="margin-top:0;">Une précision ?</h3>
-            <textarea id="input-note" placeholder="Tape ici (facultatif)..." rows="4" style="width:100%; border-radius:15px; border:1px solid #ddd; padding:10px; font-family:inherit; outline:none; resize:none; margin-bottom:15px; box-sizing: border-box;"></textarea>
+            <textarea id="input-note" placeholder="Tape ici..." rows="4" style="width:100%; border-radius:15px; border:1px solid #ddd; padding:10px; font-family:inherit; outline:none; resize:none; margin-bottom:15px; box-sizing: border-box;"></textarea>
             <button id="btn-valider-note" class="bouton-onglet" style="width:100%; background:#A8E6CF; color:#3d7a63; padding:15px;">Terminer ✨</button>
         </div>
     </div>
@@ -122,7 +147,6 @@
     const idMois = `${date.getFullYear()}-${date.getMonth()}`;
     let mesCauses = JSON.parse(localStorage.getItem('mesCauses')) || ["🏢 Travail", "❤️ Amour", "🥗 Santé", "🎮 Loisirs"];
 
-    // GESTION DU SPLASH SCREEN
     setTimeout(() => {
         const splash = document.getElementById('splash-screen');
         if(splash) {
@@ -227,19 +251,13 @@
         document.getElementById('cause-majeure').innerText = top;
     }
 
-    // EVENTS
     document.getElementById('retour-choix').onclick = () => naviguer('ecran-choix');
     document.getElementById('retour-raisons').onclick = () => naviguer('ecran-raisons');
     document.getElementById('modal-close-btn').onclick = () => document.getElementById('modal-detail').classList.add('cache');
 
     document.getElementById('btn-ajouter-cause').onclick = () => {
         const val = document.getElementById('input-nouvelle-cause').value;
-        if(val.trim()) { 
-            mesCauses.push(val.trim()); 
-            localStorage.setItem('mesCauses', JSON.stringify(mesCauses)); 
-            chargerCauses(); 
-            document.getElementById('input-nouvelle-cause').value = ""; 
-        }
+        if(val.trim()) { mesCauses.push(val.trim()); localStorage.setItem('mesCauses', JSON.stringify(mesCauses)); chargerCauses(); document.getElementById('input-nouvelle-cause').value = ""; }
     };
 
     document.getElementById('btn-voir-grille').onclick = () => {
@@ -257,10 +275,7 @@
     };
 
     document.getElementById('btn-reset').onclick = () => {
-        if(confirm("Effacer tout le mois ?")) { 
-            localStorage.removeItem(`histo-${idMois}`); 
-            location.reload(); 
-        }
+        if(confirm("Effacer tout le mois ?")) { localStorage.removeItem(`histo-${idMois}`); location.reload(); }
     };
 
     const histoInit = JSON.parse(localStorage.getItem(`histo-${idMois}`)) || {};
