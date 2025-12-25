@@ -13,6 +13,18 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         #ecran-choix { display: flex; flex-direction: column; height: 100vh; }
+        
+        .message-accueil {
+            padding-top: 60px;
+            padding-bottom: 20px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #444;
+            text-align: center;
+            background-color: #fcfcfc;
+            width: 100%;
+        }
+
         .bouton { flex: 1; border: none; cursor: pointer; font-size: 100px; display: flex; align-items: center; justify-content: center; transition: transform 0.1s; -webkit-tap-highlight-color: transparent; }
         .bouton:active { transform: scale(0.95); }
         .bouton.vert { background-color: #A8E6CF; }
@@ -40,7 +52,6 @@
         .stat-label { display: block; font-size: 10px; color: #999; text-transform: uppercase; margin-bottom: 4px; }
         .stat-valeur { display: block; font-size: 16px; font-weight: 800; color: #333; }
 
-        /* STYLE DE LA FLÈCHE DE RETOUR */
         .fleche-retour {
             position: absolute;
             top: 30px;
@@ -50,6 +61,7 @@
             cursor: pointer;
             padding: 10px;
             -webkit-tap-highlight-color: transparent;
+            z-index: 10;
         }
 
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 100; }
@@ -64,6 +76,7 @@
 
 <div id="app">
   <div id="ecran-choix" class="ecran-accueil fondue">
+    <div class="message-accueil">Alors, ton ressenti du jour ?</div>
     <button class="bouton vert" id="btn-vert">😊</button>
     <button class="bouton rouge" id="btn-rouge">😕</button>
   </div>
@@ -126,7 +139,6 @@
   const causesParDefaut = ["🏢 Travail", "❤️ Amour", "🥗 Santé", "🎮 Loisirs", "💰 Argent"];
   let mesCauses = JSON.parse(localStorage.getItem('mesCauses')) || causesParDefaut;
 
-  // --- FONCTIONS DE NAVIGATION (FLÈCHES) ---
   window.retourVersChoix = function() {
       document.getElementById('ecran-raisons').classList.add('cache');
       document.getElementById('ecran-choix').classList.remove('cache');
