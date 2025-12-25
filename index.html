@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" style="background-color: #f2f2f7;">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -11,78 +11,57 @@
     
     <title>Mood Tracker</title>
     <style>
+        /* Ajustement pour le plein écran total (encoche/barre d'état) */
         :root {
             --safe-top: env(safe-area-inset-top);
-            --safe-bottom: env(safe-area-inset-bottom);
         }
 
-        html, body { 
-            margin: 0; padding: 0; 
-            width: 100%; height: 100%;
-            background-color: #f2f2f7;
+        body, html { 
+            margin: 0; padding: 0; height: 100%; 
             font-family: -apple-system, sans-serif; 
+            background-color: #f2f2f7; 
             overflow: hidden; 
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
 
         .cache { display: none !important; }
+        .fondue { animation: fadeIn 0.6s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ÉCRAN DE CHOIX - LES BOUTONS COULENT JUSQU'EN BAS */
-        #ecran-choix {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            width: 100%;
-        }
+        /* SPLASH SCREEN */
+        #splash-screen { position: fixed; inset: 0; background-color: #ffffff; display: flex; align-items: center; justify-content: center; z-index: 5000; opacity: 1; transition: opacity 1s ease-out; }
+        .carte-accueil { font-size: 24px; font-weight: 600; color: #1c1c1e; text-align: center; }
+        .hidden-splash { opacity: 0 !important; pointer-events: none; }
 
-        .bouton-principal { 
-            flex: 1; 
-            width: 100%; 
-            border: none; 
-            font-size: 100px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            cursor: pointer;
-            padding-top: 0;
-            padding-bottom: 0;
-        }
-
-        /* Le bouton du bas (rouge) prend le padding de la barre iPhone pour que l'emoji reste centré visuellement */
-        .bouton-principal.rouge { 
-            background-color: #FF8B94; 
-            padding-bottom: var(--safe-bottom); 
-        }
-        .bouton-principal.vert { 
-            background-color: #A8E6CF; 
-            padding-top: var(--safe-top); 
-        }
-
-        /* AUTRES ÉCRANS */
+        /* INTERFACE */
         .ecran-accueil { display: flex; flex-direction: column; height: 100vh; width: 100%; position: relative; align-items: center; justify-content: center; }
         
-        .fleche-retour { position: absolute; top: calc(var(--safe-top) + 15px); left: 20px; font-size: 30px; color: #8e8e93; z-index: 10; }
-        #titre-raison { margin-top: calc(var(--safe-top) + 20px); }
-        .actions-finales { display: flex; gap: 10px; margin-bottom: 20px; margin-top: calc(var(--safe-top) + 20px); }
+        /* On pousse le contenu vers le bas pour ne pas être sous l'heure de l'iPhone */
+        .fleche-retour { position: absolute; top: calc(var(--safe-top) + 15px); left: 20px; font-size: 30px; color: #8e8e93; cursor: pointer; z-index: 10; }
+        
+        .bouton-principal { flex: 1; width: 100%; border: none; font-size: 100px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .bouton-principal.vert { background-color: #A8E6CF; }
+        .bouton-principal.rouge { background-color: #FF8B94; }
 
-        #ecran-confirmation { padding-bottom: var(--safe-bottom); }
+        #titre-raison { margin-top: var(--safe-top); }
 
         .liste-raisons { display: flex; flex-direction: column; width: 85%; max-width: 350px; gap: 10px; margin-bottom: 15px; }
         .item-cause { display: flex; gap: 8px; width: 100%; }
-        .btn-raison { flex: 1; padding: 18px; border: none; border-radius: 15px; background: white; font-size: 17px; font-weight: 600; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .btn-suppr { background: white; border: none; border-radius: 15px; padding: 0 15px; color: #FF8B94; font-weight: bold; }
+        .btn-raison { flex: 1; padding: 18px; border: none; border-radius: 15px; background: white; font-size: 17px; font-weight: 600; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor: pointer; }
+        .btn-suppr { background: white; border: none; border-radius: 15px; padding: 0 15px; color: #FF8B94; font-weight: bold; cursor: pointer; }
 
         .zone-ajout { display: flex; width: 85%; max-width: 350px; gap: 10px; }
         #input-nouvelle-cause { flex: 1; padding: 15px; border-radius: 12px; border: 1px solid #ddd; outline: none; font-size: 16px; }
-        #btn-ajouter-cause { padding: 15px; background: white; border: none; border-radius: 12px; font-weight: bold; }
+        #btn-ajouter-cause { padding: 15px; background: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
 
-        .bouton-onglet { border: none; padding: 12px 20px; border-radius: 20px; font-size: 14px; font-weight: bold; background: #e5e5ea; color: #8e8e93; }
+        .actions-finales { display: flex; gap: 10px; margin-bottom: 20px; margin-top: var(--safe-top); }
+        .bouton-onglet { border: none; padding: 12px 20px; border-radius: 20px; font-size: 14px; font-weight: bold; background: #e5e5ea; color: #8e8e93; cursor: pointer; transition: 0.3s; }
         .actif-vert { background-color: #A8E6CF !important; color: #3d7a63 !important; }
         .actif-rouge { background-color: #FF8B94 !important; color: #8a3d43 !important; }
 
         .grille { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; background: white; padding: 20px; border-radius: 25px; }
-        .pixel { width: 35px; height: 35px; background: #eee; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; }
+        .pixel { width: 35px; height: 35px; background: #eee; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; cursor: pointer; }
         .pixel.vert { background-color: #A8E6CF !important; }
         .pixel.rouge { background-color: #FF8B94 !important; }
 
@@ -91,10 +70,10 @@
         .stat-label { font-size: 10px; color: #999; text-transform: uppercase; display: block; }
         .stat-valeur { font-size: 18px; font-weight: bold; color: #333; }
 
-        .btn-reset { margin-top: 20px; font-size: 12px; color: #ccaeae; text-decoration: underline; padding-bottom: 30px; }
+        .btn-reset { margin-top: 30px; font-size: 12px; color: #ccaeae; text-decoration: underline; cursor: pointer; }
 
-        #splash-screen { position: fixed; inset: 0; background-color: #ffffff; display: flex; align-items: center; justify-content: center; z-index: 5000; }
-        .hidden-splash { opacity: 0 !important; pointer-events: none; transition: opacity 1s ease-out; }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 6000; }
+        .modal-content { background: white; padding: 30px; border-radius: 30px; width: 80%; max-width: 400px; text-align: center; }
     </style>
 </head>
 <body>
@@ -104,13 +83,13 @@
         <div class="carte-accueil">Alors, ton ressenti du jour ?</div>
     </div>
 
-    <div id="ecran-choix">
-        <button class="bouton-principal vert" onclick="choisirHumeur('content')">😊</button>
-        <button class="bouton-principal rouge" onclick="choisirHumeur('pas-content')">😕</button>
+    <div id="ecran-choix" class="ecran-accueil">
+        <button class="bouton-principal vert" id="btn-vert" onclick="choisirHumeur('content')">😊</button>
+        <button class="bouton-principal rouge" id="btn-rouge" onclick="choisirHumeur('pas-content')">😕</button>
     </div>
 
-    <div id="ecran-raisons" class="ecran-accueil cache">
-        <div class="fleche-retour" onclick="naviguer('ecran-choix')">←</div>
+    <div id="ecran-raisons" class="ecran-accueil cache fondue">
+        <div class="fleche-retour" id="retour-choix">←</div>
         <h1 id="titre-raison">Pourquoi ?</h1>
         <div id="container-raisons" class="liste-raisons"></div>
         <div class="zone-ajout">
@@ -119,21 +98,22 @@
         </div>
     </div>
 
-    <div id="modal-note" class="modal cache" style="position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 6000;">
-        <div class="modal-content" style="background: white; padding: 30px; border-radius: 30px; width: 80%; max-width: 400px; text-align: center;">
+    <div id="modal-note" class="modal cache">
+        <div class="modal-content fondue">
             <h3 style="margin-top:0;">Une précision ?</h3>
-            <textarea id="input-note" placeholder="Tape ici..." rows="4" style="width:100%; border-radius:15px; border:1px solid #ddd; padding:10px; outline:none; resize:none; margin-bottom:15px; box-sizing: border-box;"></textarea>
-            <button id="btn-valider-note" class="bouton-onglet" style="width:100%; background:#A8E6CF; color:#3d7a63; padding:15px; border-radius:20px; border:none; font-weight:bold;">Terminer ✨</button>
+            <textarea id="input-note" placeholder="Tape ici..." rows="4" style="width:100%; border-radius:15px; border:1px solid #ddd; padding:10px; font-family:inherit; outline:none; resize:none; margin-bottom:15px; box-sizing: border-box;"></textarea>
+            <button id="btn-valider-note" class="bouton-onglet" style="width:100%; background:#A8E6CF; color:#3d7a63; padding:15px;">Terminer ✨</button>
         </div>
     </div>
 
-    <div id="ecran-confirmation" class="ecran-accueil cache">
-        <div class="fleche-retour" onclick="naviguer('ecran-raisons')">←</div>
+    <div id="ecran-confirmation" class="ecran-accueil cache fondue">
+        <div class="fleche-retour" id="retour-raisons">←</div>
+        <h1>C'est noté !</h1>
         <div class="actions-finales">
             <button id="btn-voir-grille" class="bouton-onglet">Calendrier</button>
             <button id="btn-voir-stats" class="bouton-onglet">Analyses 📊</button>
         </div>
-        <h2 id="nom-du-mois" style="margin: 10px 0;"></h2>
+        <h2 id="nom-du-mois"></h2>
         <div id="grille-pixels" class="grille"></div>
         <div id="section-stats" class="stats-container cache">
             <div class="stat-card">
@@ -145,15 +125,15 @@
                 <span id="cause-majeure" class="stat-valeur">--</span>
             </div>
         </div>
-        <p class="btn-reset" onclick="resetData()">Réinitialiser tout le mois</p>
+        <p id="btn-reset" class="btn-reset">Réinitialiser tout le mois</p>
     </div>
 
-    <div id="modal-detail" class="modal cache" style="position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 6000;">
-        <div class="modal-content" style="background: white; padding: 30px; border-radius: 30px; width: 80%; max-width: 400px; text-align: center;">
+    <div id="modal-detail" class="modal cache">
+        <div class="modal-content">
             <div id="modal-emoji" style="font-size: 50px;">😊</div>
             <h2 id="modal-date" style="font-size: 16px; color: #888;">Date</h2>
             <div id="modal-raison" style="font-size: 22px; font-weight: bold; margin: 15px 0;">Raison</div>
-            <button onclick="document.getElementById('modal-detail').classList.add('cache')" class="bouton-onglet" style="width: 100%; background: #eee; border:none; padding:15px; border-radius:20px;">Fermer</button>
+            <button id="modal-close-btn" class="bouton-onglet" style="width: 100%; background: #eee;">Fermer</button>
         </div>
     </div>
 </div>
@@ -169,17 +149,28 @@
 
     setTimeout(() => {
         const splash = document.getElementById('splash-screen');
-        if(splash) splash.classList.add('hidden-splash');
+        if(splash) {
+            splash.classList.add('hidden-splash');
+            setTimeout(() => splash.style.display = 'none', 1000);
+        }
     }, 1500);
 
-    window.naviguer = function(id) {
-        document.querySelectorAll('#ecran-choix, .ecran-accueil').forEach(e => e.classList.add('cache'));
+    function naviguer(id) {
+        document.querySelectorAll('.ecran-accueil').forEach(e => e.classList.add('cache'));
         document.getElementById(id).classList.remove('cache');
+    }
+
+    function MAJOnglets(idBouton) {
+        const boutons = document.querySelectorAll('.bouton-onglet');
+        const classeHumeur = (humeurDuJour === 'content') ? 'actif-vert' : 'actif-rouge';
+        boutons.forEach(b => b.classList.remove('actif-vert', 'actif-rouge'));
+        document.getElementById(idBouton).classList.add(classeHumeur);
     }
 
     window.choisirHumeur = function(h) {
         humeurDuJour = h;
-        confetti({ particleCount: 40, colors: h === 'content' ? ['#A8E6CF'] : ['#FF8B94'] });
+        const couleurConfetti = (h === 'content') ? ['#A8E6CF'] : ['#FF8B94'];
+        confetti({ particleCount: 40, colors: couleurConfetti });
         naviguer('ecran-raisons');
         document.getElementById('titre-raison').innerText = h === 'content' ? "Super ! Pourquoi ?" : "Mince... Pourquoi ?";
         chargerCauses();
@@ -195,6 +186,7 @@
             div.querySelector('.btn-raison').onclick = () => {
                 causeChoisie = r;
                 document.getElementById('modal-note').classList.remove('cache');
+                document.getElementById('input-note').focus();
             };
             div.querySelector('.btn-suppr').onclick = () => {
                 mesCauses.splice(index, 1);
@@ -211,16 +203,18 @@
         histo[date.getDate()] = { humeur: humeurDuJour, raison: causeChoisie, note: noteDetail };
         localStorage.setItem(`histo-${idMois}`, JSON.stringify(histo));
         document.getElementById('modal-note').classList.add('cache');
-        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        document.getElementById('input-note').value = "";
+        const couleurConfetti = (humeurDuJour === 'content') ? ['#A8E6CF'] : ['#FF8B94'];
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: couleurConfetti });
         afficherFinal();
     };
 
     function afficherFinal() {
         naviguer('ecran-confirmation');
         document.getElementById('nom-du-mois').innerText = date.toLocaleDateString('fr-FR', {month:'long'});
+        document.getElementById('btn-voir-grille').click();
         dessinerGrille();
         calculerStats();
-        MAJOnglets('btn-voir-grille');
     }
 
     function dessinerGrille() {
@@ -236,7 +230,8 @@
                 p.onclick = () => {
                     document.getElementById('modal-emoji').innerText = histo[i].humeur === 'content' ? '😊' : '😕';
                     document.getElementById('modal-date').innerText = "Le " + i;
-                    document.getElementById('modal-raison').innerHTML = histo[i].raison + (histo[i].note ? `<br><small style="font-weight:normal; font-style:italic;">"${histo[i].note}"</small>` : "");
+                    const noteTxt = histo[i].note ? `<br><small style="font-weight:normal; color:#666; font-style:italic;">"${histo[i].note}"</small>` : "";
+                    document.getElementById('modal-raison').innerHTML = histo[i].raison + noteTxt;
                     document.getElementById('modal-detail').classList.remove('cache');
                 };
             }
@@ -256,10 +251,14 @@
         document.getElementById('cause-majeure').innerText = top;
     }
 
-    function MAJOnglets(idBouton) {
-        document.querySelectorAll('.bouton-onglet').forEach(b => b.classList.remove('actif-vert', 'actif-rouge'));
-        document.getElementById(idBouton).classList.add(humeurDuJour === 'content' ? 'actif-vert' : 'actif-rouge');
-    }
+    document.getElementById('retour-choix').onclick = () => naviguer('ecran-choix');
+    document.getElementById('retour-raisons').onclick = () => naviguer('ecran-raisons');
+    document.getElementById('modal-close-btn').onclick = () => document.getElementById('modal-detail').classList.add('cache');
+
+    document.getElementById('btn-ajouter-cause').onclick = () => {
+        const val = document.getElementById('input-nouvelle-cause').value;
+        if(val.trim()) { mesCauses.push(val.trim()); localStorage.setItem('mesCauses', JSON.stringify(mesCauses)); chargerCauses(); document.getElementById('input-nouvelle-cause').value = ""; }
+    };
 
     document.getElementById('btn-voir-grille').onclick = () => {
         MAJOnglets('btn-voir-grille');
@@ -275,13 +274,8 @@
         document.getElementById('nom-du-mois').classList.add('cache');
     };
 
-    window.resetData = function() {
+    document.getElementById('btn-reset').onclick = () => {
         if(confirm("Effacer tout le mois ?")) { localStorage.removeItem(`histo-${idMois}`); location.reload(); }
-    };
-
-    document.getElementById('btn-ajouter-cause').onclick = () => {
-        const val = document.getElementById('input-nouvelle-cause').value;
-        if(val.trim()) { mesCauses.push(val.trim()); localStorage.setItem('mesCauses', JSON.stringify(mesCauses)); chargerCauses(); document.getElementById('input-nouvelle-cause').value = ""; }
     };
 
     const histoInit = JSON.parse(localStorage.getItem(`histo-${idMois}`)) || {};
