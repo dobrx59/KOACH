@@ -7,66 +7,82 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="splash-screen"><div class="carte-accueil"></div></div>
+    <div id="splash-screen-koach">
+    <div class="splash-logo">🐨</div>
+    <div class="splash-title">KOACH</div>
+    <div class="carte-accueil"></div>
+</div>
 
-    <div id="ecran-choix" class="ecran-accueil fondue">
-        <button class="bouton-principal vert" onclick="choisirHumeur('content')">😊</button>
-        <button class="bouton-principal rouge" onclick="choisirHumeur('pas-content')">😕</button>
-    </div>
+<div id="ecran-choix" class="ecran-accueil fondue">
+    <button class="bouton-principal vert" onclick="choisirHumeur('content')">
+        <div class="koala-wrapper bounce">
+            <span class="koala-icon">🐨</span>
+            <span class="emoji-overlay">✨</span>
+        </div>
+        <span class="label-humeur"></span>
+    </button>
+    <button class="bouton-principal rouge" onclick="choisirHumeur('pas-content')">
+        <div class="koala-wrapper sway">
+            <span class="koala-icon koala-triste">🐨</span>
+            <span class="emoji-overlay triste">💧</span>
+        </div>
+        <span class="label-humeur"></span>
+    </button>
+</div>
 
-    <div id="ecran-raisons" class="ecran-accueil cache">
-        <div class="fleche-retour" id="btn-retour-choix">←</div>
-        <h2 id="titre-reason" style="margin-top: 60px;">Pourquoi ?</h2>
-        <div id="container-raisons" class="liste-raisons"></div>
-        <div class="zone-ajout">
-            <input type="text" id="input-nouvelle-cause" placeholder="Ajouter une raison...">
-            <button id="btn-ajouter-cause">+</button>
-        </div>
+<div id="ecran-raisons" class="ecran-accueil cache">
+    <div class="fleche-retour" id="btn-retour-choix">←</div>
+    <h2 id="titre-reason" style="margin-top: 60px;">Pourquoi ?</h2>
+    <div id="container-raisons" class="liste-raisons"></div>
+    <div class="zone-ajout">
+        <input type="text" id="input-nouvelle-cause" placeholder="Ajouter une raison...">
+        <button id="btn-ajouter-cause">+</button>
     </div>
+</div>
 
-    <div id="ecran-confirmation" class="ecran-accueil cache">
-        <div class="actions-finales" style="margin-top: 40px;">
-            <button id="btn-tab-grille" class="bouton-onglet">Mon Mois</button>
-            <button id="btn-tab-stats" class="bouton-onglet">Analyse</button>
-        </div>
-        <h2 id="nom-du-mois">---</h2>
-        <div id="grille-pixels" class="grille fondue"></div>
-        
-        <div id="section-stats" class="stats-container cache fondue">
-            <div class="stat-card">
-                <span class="stat-label">Série actuelle 🔥</span>
-                <span id="streak-count" class="stat-valeur">--</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-label">Tendance (7 jours)</span>
-                <div id="mood-trend-container"></div>
-            </div>
-            <div class="stat-card">
-                <span class="stat-label">Statistiques globales</span>
-                <span id="score-bonheur" class="stat-valeur">--</span>
-                <span id="cause-majeure" class="stat-sub">--</span>
-            </div>
-            <div id="real-reset-btn" class="btn-reset">Réinitialiser le mois</div>
-        </div>
+<div id="ecran-confirmation" class="ecran-accueil cache">
+    <div class="actions-finales" style="margin-top: 40px;">
+        <button id="btn-tab-grille" class="bouton-onglet">Mon Mois</button>
+        <button id="btn-tab-stats" class="bouton-onglet">Analyse</button>
     </div>
+    <h2 id="nom-du-mois">---</h2>
+    <div id="grille-pixels" class="grille fondue"></div>
+    
+    <div id="section-stats" class="stats-container cache fondue">
+        <div class="stat-card">
+            <span class="stat-label">Série actuelle 🔥</span>
+            <span id="streak-count" class="stat-valeur">--</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Tendance (7 jours)</span>
+            <div id="mood-trend-container"></div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Bohneur global</span>
+            <span id="score-bonheur" class="stat-valeur">--</span>
+            <span id="cause-majeure" class="stat-sub">--</span>
+        </div>
+        <div id="real-reset-btn" class="btn-reset">Réinitialiser le mois</div>
+    </div>
+</div>
 
-    <div id="modal-note" class="modal cache">
-        <div class="modal-content">
-            <h3>Une petite note ?</h3>
-            <textarea id="input-note" placeholder="Détaille un peu ta journée..."></textarea>
-            <button id="btn-valider-note" class="btn-primary">Valider</button>
-        </div>
+<div id="modal-note" class="modal cache">
+    <div class="modal-content">
+        <h3>Une petite note ?</h3>
+        <textarea id="input-note" placeholder="Détaille un peu ta journée..."></textarea>
+        <button id="btn-valider-note" class="btn-primary">Valider</button>
     </div>
+</div>
 
-    <div id="modal-detail" class="modal cache">
-        <div class="modal-content">
-            <div id="modal-emoji" style="font-size:40px; margin-bottom:10px;"></div>
-            <h3 id="modal-date"></h3>
-            <p id="modal-raison"></p>
-            <button id="modal-close-btn" class="btn-primary" style="background:#eee; color:#333;">Fermer</button>
-            <button id="btn-modifier-jour" class="btn-modifier">Modifier cette journée</button>
-        </div>
+<div id="modal-detail" class="modal cache">
+    <div class="modal-content">
+        <div id="modal-emoji" style="font-size:40px; margin-bottom:10px;"></div>
+        <h3 id="modal-date"></h3>
+        <p id="modal-raison"></p>
+        <button id="modal-close-btn" class="btn-primary" style="background:#eee; color:#333;">Fermer</button>
+        <button id="btn-modifier-jour" class="btn-modifier">Modifier cette journée</button>
     </div>
+</div>
 
     <script type="module" src="script.js"></script>
 </body>
