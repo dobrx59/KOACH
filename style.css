@@ -5,7 +5,6 @@
     --text: #1c1c1e;
 }
 
-/* On empêche le scroll horizontal et on force le centrage */
 body, html { 
     margin: 0; padding: 0; height: 100%; width: 100%;
     font-family: -apple-system, system-ui, sans-serif; 
@@ -19,22 +18,26 @@ body, html {
 .fondue { animation: fadeIn 0.4s ease-out; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* SPLASH SCREEN - Texte réduit et centré pour iPhone */
-#splash-screen { 
+/* SPLASH SCREEN KOACH */
+#splash-screen-koach { 
     position: fixed; inset: 0; background: #fff; 
-    display: flex; align-items: center; justify-content: center; 
+    display: flex; flex-direction: column; align-items: center; justify-content: center; 
     z-index: 5000; transition: opacity 0.8s; 
     padding: 20px; text-align: center;
 }
+.splash-logo { font-size: 80px; animation: pulse-koala 2s infinite; }
+.splash-title { font-size: 28px; font-weight: 900; letter-spacing: 4px; margin-bottom: 20px; }
 .carte-accueil { 
-    font-size: 20px; /* Réduit de 24px à 20px */
+    font-size: 20px; 
     line-height: 1.4;
     font-weight: 600; 
+    color: #8e8e93;
     opacity: 0; transform: translateY(10px); transition: 0.8s; 
 }
 .reveal-text { opacity: 1 !important; transform: translateY(0) !important; }
 
-/* AJUSTEMENT ÉCRAN - On utilise flex-start pour éviter que ça remonte trop haut */
+@keyframes pulse-koala { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
 .ecran-accueil { 
     display: flex; flex-direction: column; 
     height: 100vh; width: 100%;
@@ -43,20 +46,12 @@ body, html {
     text-align: center;
 }
 
-/* TITRES - Plus petits pour éviter le passage à la ligne */
-h2 {
-    font-size: 22px;
-    margin: 20px 0;
-    width: 90%;
-}
-
+h2 { font-size: 22px; margin: 20px 0; width: 90%; }
 .fleche-retour { position: absolute; top: 40px; left: 15px; font-size: 26px; color: #8e8e93; cursor: pointer; padding: 10px; z-index: 100; }
-
 .bouton-principal { flex: 1; width: 100%; border: none; font-size: 80px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .bouton-principal.vert { background-color: var(--vert); }
 .bouton-principal.rouge { background-color: var(--rouge); }
 
-/* LISTES - Largeur max ajustée pour mobile */
 .liste-raisons { display: flex; flex-direction: column; width: 90%; max-width: 350px; gap: 8px; margin-top: 15px; margin-bottom: 15px; }
 .btn-raison { flex: 1; padding: 16px; border: none; border-radius: 15px; background: white; font-size: 16px; font-weight: 600; cursor: pointer; text-align: left; }
 .btn-suppr { background: white; border: none; border-radius: 15px; padding: 0 12px; color: var(--rouge); cursor: pointer; }
@@ -71,7 +66,6 @@ h2 {
 .actif-vert { background-color: var(--vert) !important; color: #3d7a63 !important; }
 .actif-rouge { background-color: var(--rouge) !important; color: #8a3d43 !important; }
 
-/* GRILLE - On réduit un peu la taille des pixels pour mobile */
 .grille { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; background: white; padding: 15px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
 .pixel { width: 32px; height: 32px; background: #eee; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; cursor: pointer; }
 .pixel.vert { background-color: var(--vert) !important; }
@@ -86,10 +80,33 @@ h2 {
 #mood-trend-container { display: flex; align-items: flex-end; gap: 5px; height: 35px; margin-top: 8px; }
 .barre-trend { flex: 1; border-radius: 3px; min-height: 4px; }
 
-/* MODALES - Ajustement hauteur input */
 .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 6000; padding: 20px; }
 .modal-content { background: white; padding: 25px; border-radius: 28px; width: 100%; max-width: 350px; text-align: center; }
 #input-note { width: 100%; height: 90px; padding: 12px; border-radius: 14px; border: 1px solid #ddd; background: #fafafa; font-size: 16px; margin: 12px 0; box-sizing: border-box; font-family: inherit; color: #000; }
 .btn-primary { width: 100%; padding: 16px; border-radius: 18px; border: none; background: var(--vert); font-weight: bold; cursor: pointer; font-size: 16px; }
 .btn-modifier { margin-top: 15px; background: none; border: none; color: #8e8e93; text-decoration: underline; cursor: pointer; font-size: 12px; }
 .btn-reset { margin-top: 15px; font-size: 11px; color: #bbb; text-decoration: underline; cursor: pointer; text-align: center; }
+/* Conteneur pour superposer koala + émotion */
+.koala-wrapper { position: relative; width: 100px; height: 100px; margin-bottom: 15px; }
+.koala-icon { font-size: 80px; display: block; }
+
+/* L'émotion qui se superpose au koala */
+.emoji-overlay { position: absolute; top: 0; right: 0; font-size: 30px; }
+.emoji-overlay.triste { top: 40px; right: 10px; font-size: 25px; }
+
+/* Koala Content : Rebondit joyeusement */
+.bounce { animation: bounce-koala 2s infinite; }
+@keyframes bounce-koala {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+/* Koala Triste : Balance doucement de gauche à droite (plus mélancolique) */
+.sway { animation: sway-koala 3s infinite ease-in-out; }
+@keyframes sway-koala {
+    0%, 100% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+}
+
+.koala-triste { filter: grayscale(0.4) brightness(0.9); }
+.label-humeur { font-size: 18px; font-weight: 800; text-transform: uppercase; }
