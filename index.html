@@ -367,6 +367,10 @@
             grille.innerHTML = "";
             const histo = JSON.parse(localStorage.getItem(obtenirIdMois(vueMois, vueAnnee))) || {};
             const nbJours = new Date(vueAnnee, vueMois + 1, 0).getDate();
+            
+            // On récupère la date réelle du jour pour comparer
+            const aujourdhuiVrai = new Date();
+            aujourdhuiVrai.setHours(0, 0, 0, 0);
 
             for(let i=1; i<=nbJours; i++) {
                 const p = document.createElement('div');
@@ -374,15 +378,21 @@
                 p.innerText = i;
 
                 p.onclick = () => {
-                    jourEnModification = i; // On stocke le jour cliqué
+                    // Création d'un objet date pour le pixel cliqué
+                    const datePixel = new Date(vueAnnee, vueMois, i);
+                    
+                    // SÉCURITÉ : Si la date est dans le futur, on ne fait rien
+                    if (datePixel > aujourdhuiVrai) {
+                        return; // Bloque le clic
+                    }
+
+                    jourEnModification = i; 
                     if(histo[i]) {
-                        // Si le jour est déjà rempli, on ouvre la modale de détail (ton code actuel)
                         document.getElementById('modal-emoji').innerText = histo[i].humeur === 'content' ? '😊' : '😕';
                         document.getElementById('modal-date').innerText = i + " " + new Date(vueAnnee, vueMois).toLocaleDateString('fr-FR', {month:'long'});
                         document.getElementById('modal-raison').innerHTML = `<strong>${histo[i].raison}</strong>` + (histo[i].note ? `<br>"${histo[i].note}"` : "");
                         document.getElementById('modal-detail').classList.remove('cache');
                     } else {
-                        // SI LE JOUR EST VIDE : On bascule directement sur l'écran de choix d'humeur
                         document.querySelectorAll('.ecran-accueil').forEach(e => e.classList.add('cache'));
                         document.getElementById('ecran-choix').classList.remove('cache');
                     }
