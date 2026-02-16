@@ -292,6 +292,36 @@
 }
 
     document.addEventListener('DOMContentLoaded', () => {
+        // --- À mettre au début du DOMContentLoaded ---
+const inputHeure = document.getElementById('time-notif');
+
+// Charger l'heure enregistrée ou mettre 20:00 par défaut
+const heureSauvegardee = localStorage.getItem('koachHeureNotif') || "20:00";
+inputHeure.value = heureSauvegardee;
+
+// Sauvegarder quand l'heure change
+inputHeure.onchange = () => {
+    localStorage.setItem('koachHeureNotif', inputHeure.value);
+    // Optionnel : on peut relancer une petite confirmation
+    console.log("Heure de rappel réglée sur :", inputHeure.value);
+};
+
+// Mettre à jour la fonction de demande de permission (pour inclure l'heure)
+window.requestNotificationPermission = async function() {
+    const permission = await Notification.requestPermission();
+    if (permission === 'granted') {
+        const heure = inputHeure.value;
+        const reg = await navigator.serviceWorker.ready;
+        reg.showNotification("KOACH 🐨", {
+            body: `C'est noté ! Je viendrai te voir chaque jour à ${heure}.`,
+            icon: "https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Koala/3D/koala_3d.png"
+        });
+    } else {
+        alert("Pense à autoriser les notifications dans les réglages iOS.");
+    }
+};
+
+document.getElementById('btn-notif-enable').onclick = requestNotificationPermission;
         const dateAujourdhui = new Date();
         let vueMois = dateAujourdhui.getMonth();
         let vueAnnee = dateAujourdhui.getFullYear();
