@@ -271,14 +271,25 @@
     }
 
     async function requestNotificationPermission() {
-        const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
-            alert("Super ! KOACH t'enverra tes rappels quotidiens.");
-            // On pourrait programmer ici via l'API Local Notifications ou un backend
-            // Pour une PWA pure, on simule l'intention. 
-            // Les vraies notifs programmées nécessitent un Service Worker actif avec "showNotification"
-        }
+    // Vérifie si le navigateur supporte les notifs
+    if (!("Notification" in window)) {
+        alert("Ce navigateur ne supporte pas les notifications.");
+        return;
     }
+
+    const permission = await Notification.requestPermission();
+    
+    if (permission === 'granted') {
+        const reg = await navigator.serviceWorker.ready;
+        // Test immédiat pour confirmer
+        reg.showNotification("KOACH 🐨", {
+            body: "Parfait ! Les rappels sont activés.",
+            icon: "https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Koala/3D/koala_3d.png"
+        });
+    } else {
+        alert("Pour recevoir les alertes à 20h, active les notifications dans les réglages de ton iPhone.");
+    }
+}
 
     document.addEventListener('DOMContentLoaded', () => {
         const dateAujourdhui = new Date();
