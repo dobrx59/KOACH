@@ -354,11 +354,33 @@ document.getElementById('btn-notif-enable').onclick = requestNotificationPermiss
 
         // NAV
         window.switchMainTab = function(target, element) {
+            // 1. Cache ABSOLUMENT TOUT (sections et écrans d'accueil)
             document.querySelectorAll('.tab-content').forEach(s => s.classList.add('cache'));
-            document.getElementById('section-' + target).classList.remove('cache');
+            document.querySelectorAll('.ecran-accueil').forEach(e => e.classList.add('cache'));
+            
+            // 2. Affiche la section demandée
+            const section = document.getElementById('section-' + target);
+            if (section) section.classList.remove('cache');
+
+            // 3. Gère le style des boutons du menu du bas
             document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'));
             element.classList.add('active');
-            if (target === 'goals') afficherObjectifs();
+
+            // 4. LOGIQUE SPÉCIFIQUE POUR L'ONGLET KOACH
+            if (target === 'koach') {
+                const histoActuel = JSON.parse(localStorage.getItem(obtenirIdMois(dateAujourdhui.getMonth(), dateAujourdhui.getFullYear()))) || {};
+                // Si on a déjà rempli aujourd'hui, on montre la grille, sinon l'écran de choix (rouge/vert)
+                if (histoActuel[dateAujourdhui.getDate()]) {
+                    afficherFinal(); 
+                } else {
+                    document.getElementById('ecran-choix').classList.remove('cache');
+                }
+            }
+            
+            // 5. LOGIQUE SPÉCIFIQUE POUR MISSIONS
+            if (target === 'goals') {
+                afficherObjectifs();
+            }
         };
 
         // KOACH LOGIC
