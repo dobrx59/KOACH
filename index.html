@@ -361,12 +361,17 @@ document.getElementById('btn-notif-enable').onclick = requestNotificationPermiss
 
         // KOACH LOGIC
         window.choisirHumeur = function(h) {
-            humeurDuJour = h;
-            confetti({ particleCount: 30, colors: h === 'content' ? ['#A8E6CF'] : ['#FF8B94'], origin: { y: 0.7 } });
-            document.querySelectorAll('.ecran-accueil').forEach(e => e.classList.add('cache'));
-            document.getElementById('ecran-raisons').classList.remove('cache');
-            chargerCauses();
-        };
+    humeurDuJour = h;
+    confetti({ 
+        particleCount: 30, 
+        colors: h === 'content' ? ['#A8E6CF'] : ['#FF8B94'], 
+        origin: { y: 0.7 } 
+    });
+    
+    // On ignore l'écran des raisons et on ouvre direct la modale de note
+    causeChoisie = "Général"; // On met une valeur par défaut invisible
+    document.getElementById('modal-note').classList.remove('cache');
+};
 
         function chargerCauses() {
             const cont = document.getElementById('container-raisons');
