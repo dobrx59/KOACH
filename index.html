@@ -354,28 +354,32 @@ document.getElementById('btn-notif-enable').onclick = requestNotificationPermiss
 
         // NAV
         window.switchMainTab = function(target, element) {
-            // 1. Cache ABSOLUMENT TOUT (sections et écrans d'accueil)
+            // 1. On cache les 3 grandes sections (KOACH, MISSIONS, RÉGLAGES)
             document.querySelectorAll('.tab-content').forEach(s => s.classList.add('cache'));
-            document.querySelectorAll('.ecran-accueil').forEach(e => e.classList.add('cache'));
             
-            // 2. Affiche la section demandée
-            const section = document.getElementById('section-' + target);
-            if (section) section.classList.remove('cache');
+            // 2. On affiche celle qu'on a choisie
+            const sectionActive = document.getElementById('section-' + target);
+            if (sectionActive) sectionActive.classList.remove('cache');
 
-            // 3. Gère le style des boutons du menu du bas
+            // 3. On gère le style du menu du bas
             document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'));
             element.classList.add('active');
 
-            // 4. LOGIQUE SPÉCIFIQUE POUR L'ONGLET KOACH
+            // 4. Si on est sur KOACH, on décide quoi montrer à l'intérieur
             if (target === 'koach') {
-                const histoActuel = JSON.parse(localStorage.getItem(obtenirIdMois(dateAujourdhui.getMonth(), dateAujourdhui.getFullYear()))) || {};
-                // Si on a déjà rempli aujourd'hui, on montre la grille, sinon l'écran de choix (rouge/vert)
-                if (histoActuel[dateAujourdhui.getDate()]) {
+                const histo = JSON.parse(localStorage.getItem(obtenirIdMois(dateAujourdhui.getMonth(), dateAujourdhui.getFullYear()))) || {};
+                if (histo[dateAujourdhui.getDate()]) {
+                    // Si déjà rempli -> On montre l'écran final (grille)
                     afficherFinal(); 
                 } else {
+                    // Si pas rempli -> On montre l'écran de choix (Vert/Rouge)
                     document.getElementById('ecran-choix').classList.remove('cache');
+                    document.getElementById('ecran-confirmation').classList.add('cache');
                 }
             }
+            
+            if (target === 'goals') afficherObjectifs();
+        };
             
             // 5. LOGIQUE SPÉCIFIQUE POUR MISSIONS
             if (target === 'goals') {
