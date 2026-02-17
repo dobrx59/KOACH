@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <link rel="manifest" href="manifest.json">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>KOACH v2.0</title>
@@ -136,6 +133,17 @@
                 <span class="label-humeur">C'est dur...</span>
             </button>
         </div>
+
+        <div id="ecran-raisons" class="ecran-accueil cache">
+            <div class="fleche-retour" id="btn-retour-choix">←</div>
+            <h2 id="titre-reason" style="margin-top: 60px; text-align: center; width: 100%;">Pourquoi ?</h2>
+            <div id="container-raisons" class="liste-raisons" style="margin: 0 auto;"></div>
+            <div class="zone-ajout" style="display:flex; width:90%; margin: 10px auto; background:var(--card-bg); border-radius:15px; padding:5px; border: 1px solid var(--border);">
+                <input type="text" id="input-nouvelle-cause" placeholder="Ajouter une raison..." style="flex:1; border:none; padding:10px; outline:none; background:transparent; color:inherit;">
+                <button id="btn-ajouter-cause" style="background:var(--vert); border:none; border-radius:10px; width:40px; color:#1c1c1e;">+</button>
+            </div>
+        </div>
+
         <div id="ecran-confirmation" class="ecran-accueil cache">
             <div class="actions-finales" style="margin-top: 40px; display:flex; gap:10px; justify-content:center;">
                 <button id="btn-tab-grille" class="bouton-onglet">Mon Mois</button>
@@ -145,37 +153,24 @@
             <div id="grille-pixels" class="grille fondue"></div>
             
             <div id="section-stats" class="stats-container cache fondue">
-    <div class="stat-card">
-        <span class="stat-label">Tendance 7 derniers jours</span>
-        <div id="trend-bar-container" style="height: 40px; display: flex; align-items: flex-end; gap: 4px; margin-top: 10px;">
-            </div>
-    </div>
-
-    <div class="stat-card" style="display: flex; justify-content: space-between; align-items: center;">
-        <div>
-            <span class="stat-label">Série actuelle 🔥</span>
-            <span id="streak-count" class="stat-valeur">--</span>
-        </div>
-        <div style="text-align: right;">
-            <span class="stat-label">Bonheur Global 🐨</span>
-            <span id="score-bonheur" class="stat-valeur">--</span>
-        </div>
-    </div>
-
-    <div class="stat-card">
-        <span class="stat-label">Répartition du mois</span>
-        <div class="repartition-bar" style="height: 20px; border-radius: 10px; margin-top: 10px;">
-            <div id="bar-vert" style="height:100%; background:var(--vert); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: #1c1c1e;"></div>
-            <div id="bar-rouge" style="height:100%; background:var(--rouge); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: #1c1c1e;"></div>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: #8e8e93;">
-            <span id="count-vert">0 jours</span>
-            <span id="count-rouge">0 jours</span>
-        </div>
-    </div>
-
-    <div id="real-reset-btn" class="btn-reset">Réinitialiser les données du mois</div>
-</div>
+                <div class="stat-card">
+                    <span class="stat-label">Série actuelle 🔥</span>
+                    <span id="streak-count" class="stat-valeur">--</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Bonheur Global 🐨</span>
+                    <span id="score-bonheur" class="stat-valeur">--</span>
+                    <div class="repartition-bar">
+                        <div id="bar-vert" style="height:100%; background:var(--vert);"></div>
+                        <div id="bar-rouge" style="height:100%; background:var(--rouge);"></div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Majorité du mois 🏆</span>
+                    <span id="cause-majeure" class="stat-valeur">--</span>
+                    <span id="cause-sub" class="stat-sub">Aucune donnée</span>
+                </div>
+                <div id="real-reset-btn" class="btn-reset">Réinitialiser le mois</div>
             </div>
         </div>
     </section>
@@ -213,12 +208,12 @@
             </label>
         </div>
         <div class="setting-row">
-    <span>Rappels quotidiens 🔔</span>
-    <div style="display: flex; align-items: center; gap: 10px;">
-        <input type="time" id="time-notif" style="border: none; background: #e5e5ea; padding: 5px; border-radius: 8px; font-family: inherit; font-weight: bold;">
-        <button id="btn-notif-enable" style="background: var(--vert); border: none; border-radius: 10px; padding: 8px 15px; font-weight: bold; cursor: pointer;">Activer</button>
-    </div>
-</div>
+            <span>Rappels quotidiens 🔔</span>
+            <button id="btn-notif-enable" style="background: var(--vert); border: none; border-radius: 10px; padding: 8px 15px; font-weight: bold; cursor: pointer;">Activer</button>
+        </div>
+        <div style="padding: 10px; font-size: 11px; color: #8e8e93;">
+            Alertes à 8h (Setup), 20h (Check-up) et 21h (Bilan).
+        </div>
         
         <div class="stat-card" style="width:100%; margin-top:20px; box-sizing: border-box;">
             <p><strong>KOACH v2.0</strong> 🐨</p>
@@ -259,9 +254,9 @@
         <button id="btn-modifier-jour" style="background:none; border:none; text-decoration:underline; font-size:12px; color:#8e8e93; cursor:pointer;">Modifier cette journée</button>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
 <script type="module">
-    <script type="module">
+    import confetti from "https://cdn.skypack.dev/canvas-confetti";
 
     // SERVICE WORKER & NOTIFS LOGIC
     if ('serviceWorker' in navigator) {
@@ -273,57 +268,16 @@
     }
 
     async function requestNotificationPermission() {
-    // Vérifie si le navigateur supporte les notifs
-    if (!("Notification" in window)) {
-        alert("Ce navigateur ne supporte pas les notifications.");
-        return;
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+            alert("Super ! KOACH t'enverra tes rappels quotidiens.");
+            // On pourrait programmer ici via l'API Local Notifications ou un backend
+            // Pour une PWA pure, on simule l'intention. 
+            // Les vraies notifs programmées nécessitent un Service Worker actif avec "showNotification"
+        }
     }
-
-    const permission = await Notification.requestPermission();
-    
-    if (permission === 'granted') {
-        const reg = await navigator.serviceWorker.ready;
-        // Test immédiat pour confirmer
-        reg.showNotification("KOACH 🐨", {
-            body: "Parfait ! Les rappels sont activés.",
-            icon: "https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Koala/3D/koala_3d.png"
-        });
-    } else {
-        alert("Pour recevoir les alertes à 20h, active les notifications dans les réglages de ton iPhone.");
-    }
-}
 
     document.addEventListener('DOMContentLoaded', () => {
-        // --- À mettre au début du DOMContentLoaded ---
-const inputHeure = document.getElementById('time-notif');
-
-// Charger l'heure enregistrée ou mettre 20:00 par défaut
-const heureSauvegardee = localStorage.getItem('koachHeureNotif') || "20:00";
-inputHeure.value = heureSauvegardee;
-
-// Sauvegarder quand l'heure change
-inputHeure.onchange = () => {
-    localStorage.setItem('koachHeureNotif', inputHeure.value);
-    // Optionnel : on peut relancer une petite confirmation
-    console.log("Heure de rappel réglée sur :", inputHeure.value);
-};
-
-// Mettre à jour la fonction de demande de permission (pour inclure l'heure)
-window.requestNotificationPermission = async function() {
-    const permission = await Notification.requestPermission();
-    if (permission === 'granted') {
-        const heure = inputHeure.value;
-        const reg = await navigator.serviceWorker.ready;
-        reg.showNotification("KOACH 🐨", {
-            body: `C'est noté ! Je viendrai te voir chaque jour à ${heure}.`,
-            icon: "https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Koala/3D/koala_3d.png"
-        });
-    } else {
-        alert("Pense à autoriser les notifications dans les réglages iOS.");
-    }
-};
-
-document.getElementById('btn-notif-enable').onclick = requestNotificationPermission;
         const dateAujourdhui = new Date();
         let vueMois = dateAujourdhui.getMonth();
         let vueAnnee = dateAujourdhui.getFullYear();
@@ -354,52 +308,21 @@ document.getElementById('btn-notif-enable').onclick = requestNotificationPermiss
 
         // NAV
         window.switchMainTab = function(target, element) {
-            // 1. On cache les 3 grandes sections (KOACH, MISSIONS, RÉGLAGES)
             document.querySelectorAll('.tab-content').forEach(s => s.classList.add('cache'));
-            
-            // 2. On affiche celle qu'on a choisie
-            const sectionActive = document.getElementById('section-' + target);
-            if (sectionActive) sectionActive.classList.remove('cache');
-
-            // 3. On gère le style du menu du bas
+            document.getElementById('section-' + target).classList.remove('cache');
             document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'));
             element.classList.add('active');
-
-            // 4. Si on est sur KOACH, on décide quoi montrer à l'intérieur
-            if (target === 'koach') {
-                const histo = JSON.parse(localStorage.getItem(obtenirIdMois(dateAujourdhui.getMonth(), dateAujourdhui.getFullYear()))) || {};
-                if (histo[dateAujourdhui.getDate()]) {
-                    // Si déjà rempli -> On montre l'écran final (grille)
-                    afficherFinal(); 
-                } else {
-                    // Si pas rempli -> On montre l'écran de choix (Vert/Rouge)
-                    document.getElementById('ecran-choix').classList.remove('cache');
-                    document.getElementById('ecran-confirmation').classList.add('cache');
-                }
-            }
-            
             if (target === 'goals') afficherObjectifs();
-        };
-            
-            // 5. LOGIQUE SPÉCIFIQUE POUR MISSIONS
-            if (target === 'goals') {
-                afficherObjectifs();
-            }
         };
 
         // KOACH LOGIC
         window.choisirHumeur = function(h) {
-    humeurDuJour = h;
-    confetti({ 
-        particleCount: 30, 
-        colors: h === 'content' ? ['#A8E6CF'] : ['#FF8B94'], 
-        origin: { y: 0.7 } 
-    });
-    
-    // On ignore l'écran des raisons et on ouvre direct la modale de note
-    causeChoisie = "Général"; // On met une valeur par défaut invisible
-    document.getElementById('modal-note').classList.remove('cache');
-};
+            humeurDuJour = h;
+            confetti({ particleCount: 30, colors: h === 'content' ? ['#A8E6CF'] : ['#FF8B94'], origin: { y: 0.7 } });
+            document.querySelectorAll('.ecran-accueil').forEach(e => e.classList.add('cache'));
+            document.getElementById('ecran-raisons').classList.remove('cache');
+            chargerCauses();
+        };
 
         function chargerCauses() {
             const cont = document.getElementById('container-raisons');
@@ -479,77 +402,30 @@ document.getElementById('btn-notif-enable').onclick = requestNotificationPermiss
         }
 
         function calculerStats() {
-    const histo = JSON.parse(localStorage.getItem(obtenirIdMois(vueMois, vueAnnee))) || {};
-    const jours = Object.values(histo);
-    
-    // 1. Calcul de la Série (Streak)
-    let streak = 0;
-    const jC = dateAujourdhui.getDate();
-    // On vérifie si on est dans le mois actuel pour le streak
-    if (vueMois === dateAujourdhui.getMonth() && vueAnnee === dateAujourdhui.getFullYear()) {
-        for(let i = jC; i > 0; i--) { 
-            if(histo[i]) streak++; 
-            else if (i !== jC) break; 
-        }
-    }
-    document.getElementById('streak-count').innerText = streak + " j.";
+            const histo = JSON.parse(localStorage.getItem(obtenirIdMois(vueMois, vueAnnee))) || {};
+            const jours = Object.values(histo);
+            let streak = 0;
+            const jC = dateAujourdhui.getDate();
+            for(let i = jC; i > 0; i--) { if(histo[i]) streak++; else if (i !== jC) break; }
+            document.getElementById('streak-count').innerText = streak + " jours";
 
-    // 2. Graphique de Tendance (7 derniers jours)
-    const trendContainer = document.getElementById('trend-bar-container');
-    trendContainer.innerHTML = "";
-    
-    for (let i = 6; i >= 0; i--) {
-        const d = new Date();
-        d.setDate(d.getDate() - i);
-        const m = d.getMonth();
-        const a = d.getFullYear();
-        const j = d.getDate();
-        
-        const hHisto = JSON.parse(localStorage.getItem(obtenirIdMois(m, a))) || {};
-        const jourData = hHisto[j];
-        
-        const bar = document.createElement('div');
-        bar.style.flex = "1";
-        bar.style.borderRadius = "4px";
-        
-        if (!jourData) {
-            bar.style.height = "20%";
-            bar.style.background = "#e5e5ea"; // Gris si vide
-        } else {
-            bar.style.height = jourData.humeur === 'content' ? "100%" : "40%";
-            bar.style.background = jourData.humeur === 'content' ? "var(--vert)" : "var(--rouge)";
+            if(jours.length > 0) {
+                const contents = jours.filter(j => j.humeur === 'content').length;
+                const pourcentage = Math.round((contents / jours.length) * 100);
+                document.getElementById('score-bonheur').innerText = pourcentage + "%";
+                document.getElementById('bar-vert').style.width = pourcentage + "%";
+                document.getElementById('bar-rouge').style.width = (100 - pourcentage) + "%";
+                const causesMap = {};
+                jours.forEach(j => causesMap[j.raison] = (causesMap[j.raison] || 0) + 1);
+                const triees = Object.entries(causesMap).sort((a,b) => b[1] - a[1]);
+                document.getElementById('cause-majeure').innerText = triees[0][0];
+                document.getElementById('cause-sub').innerText = `Apparaît ${triees[0][1]} fois ce mois-ci`;
+            } else {
+                document.getElementById('score-bonheur').innerText = "--";
+                document.getElementById('cause-majeure').innerText = "Pas encore d'analyse";
+                document.getElementById('cause-sub').innerText = "Remplis quelques pixels !";
+            }
         }
-        trendContainer.appendChild(bar);
-    }
-
-    // 3. Score Global et Barres de répartition
-    if(jours.length > 0) {
-        const nVerts = jours.filter(j => j.humeur === 'content').length;
-        const nRouges = jours.length - nVerts;
-        const pourcent = Math.round((nVerts / jours.length) * 100);
-        
-        document.getElementById('score-bonheur').innerText = pourcent + "%";
-        
-        // Mise à jour de la barre de répartition
-        const bV = document.getElementById('bar-vert');
-        const bR = document.getElementById('bar-rouge');
-        
-        bV.style.width = pourcent + "%";
-        bV.innerText = pourcent > 10 ? pourcent + "%" : "";
-        
-        bR.style.width = (100 - pourcent) + "%";
-        bR.innerText = (100 - pourcent) > 10 ? (100 - pourcent) + "%" : "";
-        
-        document.getElementById('count-vert').innerText = nVerts + " jour(s) ✨";
-        document.getElementById('count-rouge').innerText = nRouges + " jour(s) 💧";
-    } else {
-        document.getElementById('score-bonheur').innerText = "--";
-        document.getElementById('bar-vert').style.width = "50%";
-        document.getElementById('bar-rouge').style.width = "50%";
-        document.getElementById('count-vert').innerText = "0 jour";
-        document.getElementById('count-rouge').innerText = "0 jour";
-    }
-}
 
         // MISSIONS
         window.ajouterObjectif = function(type) {
