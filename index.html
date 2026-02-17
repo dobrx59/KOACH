@@ -145,18 +145,37 @@
             <div id="grille-pixels" class="grille fondue"></div>
             
             <div id="section-stats" class="stats-container cache fondue">
-                <div class="stat-card">
-                    <span class="stat-label">Série actuelle 🔥</span>
-                    <span id="streak-count" class="stat-valeur">--</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-label">Bonheur Global 🐨</span>
-                    <span id="score-bonheur" class="stat-valeur">--</span>
-                    <div class="repartition-bar">
-                        <div id="bar-vert" style="height:100%; background:var(--vert);"></div>
-                        <div id="bar-rouge" style="height:100%; background:var(--rouge);"></div>
-                    </div>
-                </div>
+    <div class="stat-card">
+        <span class="stat-label">Tendance 7 derniers jours</span>
+        <div id="trend-bar-container" style="height: 40px; display: flex; align-items: flex-end; gap: 4px; margin-top: 10px;">
+            </div>
+    </div>
+
+    <div class="stat-card" style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <span class="stat-label">Série actuelle 🔥</span>
+            <span id="streak-count" class="stat-valeur">--</span>
+        </div>
+        <div style="text-align: right;">
+            <span class="stat-label">Bonheur Global 🐨</span>
+            <span id="score-bonheur" class="stat-valeur">--</span>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <span class="stat-label">Répartition du mois</span>
+        <div class="repartition-bar" style="height: 20px; border-radius: 10px; margin-top: 10px;">
+            <div id="bar-vert" style="height:100%; background:var(--vert); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: #1c1c1e;"></div>
+            <div id="bar-rouge" style="height:100%; background:var(--rouge); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: #1c1c1e;"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: #8e8e93;">
+            <span id="count-vert">0 jours</span>
+            <span id="count-rouge">0 jours</span>
+        </div>
+    </div>
+
+    <div id="real-reset-btn" class="btn-reset">Réinitialiser les données du mois</div>
+</div>
                 <div class="stat-card">
                     <span class="stat-label">Majorité du mois 🏆</span>
                     <span id="cause-majeure" class="stat-valeur">--</span>
@@ -440,30 +459,77 @@ document.getElementById('btn-notif-enable').onclick = requestNotificationPermiss
         }
 
         function calculerStats() {
-            const histo = JSON.parse(localStorage.getItem(obtenirIdMois(vueMois, vueAnnee))) || {};
-            const jours = Object.values(histo);
-            let streak = 0;
-            const jC = dateAujourdhui.getDate();
-            for(let i = jC; i > 0; i--) { if(histo[i]) streak++; else if (i !== jC) break; }
-            document.getElementById('streak-count').innerText = streak + " jours";
-
-            if(jours.length > 0) {
-                const contents = jours.filter(j => j.humeur === 'content').length;
-                const pourcentage = Math.round((contents / jours.length) * 100);
-                document.getElementById('score-bonheur').innerText = pourcentage + "%";
-                document.getElementById('bar-vert').style.width = pourcentage + "%";
-                document.getElementById('bar-rouge').style.width = (100 - pourcentage) + "%";
-                const causesMap = {};
-                jours.forEach(j => causesMap[j.raison] = (causesMap[j.raison] || 0) + 1);
-                const triees = Object.entries(causesMap).sort((a,b) => b[1] - a[1]);
-                document.getElementById('cause-majeure').innerText = triees[0][0];
-                document.getElementById('cause-sub').innerText = `Apparaît ${triees[0][1]} fois ce mois-ci`;
-            } else {
-                document.getElementById('score-bonheur').innerText = "--";
-                document.getElementById('cause-majeure').innerText = "Pas encore d'analyse";
-                document.getElementById('cause-sub').innerText = "Remplis quelques pixels !";
-            }
+    const histo = JSON.parse(localStorage.getItem(obtenirIdMois(vueMois, vueAnnee))) || {};
+    const jours = Object.values(histo);
+    
+    // 1. Calcul de la Série (Streak)
+    let streak = 0;
+    const jC = dateAujourdhui.getDate();
+    // On vérifie si on est dans le mois actuel pour le streak
+    if (vueMois === dateAujourdhui.getMonth() && vueAnnee === dateAujourdhui.getFullYear()) {
+        for(let i = jC; i > 0; i--) { 
+            if(histo[i]) streak++; 
+            else if (i !== jC) break; 
         }
+    }
+    document.getElementById('streak-count').innerText = streak + " j.";
+
+    // 2. Graphique de Tendance (7 derniers jours)
+    const trendContainer = document.getElementById('trend-bar-container');
+    trendContainer.innerHTML = "";
+    
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const m = d.getMonth();
+        const a = d.getFullYear();
+        const j = d.getDate();
+        
+        const hHisto = JSON.parse(localStorage.getItem(obtenirIdMois(m, a))) || {};
+        const jourData = hHisto[j];
+        
+        const bar = document.createElement('div');
+        bar.style.flex = "1";
+        bar.style.borderRadius = "4px";
+        
+        if (!jourData) {
+            bar.style.height = "20%";
+            bar.style.background = "#e5e5ea"; // Gris si vide
+        } else {
+            bar.style.height = jourData.humeur === 'content' ? "100%" : "40%";
+            bar.style.background = jourData.humeur === 'content' ? "var(--vert)" : "var(--rouge)";
+        }
+        trendContainer.appendChild(bar);
+    }
+
+    // 3. Score Global et Barres de répartition
+    if(jours.length > 0) {
+        const nVerts = jours.filter(j => j.humeur === 'content').length;
+        const nRouges = jours.length - nVerts;
+        const pourcent = Math.round((nVerts / jours.length) * 100);
+        
+        document.getElementById('score-bonheur').innerText = pourcent + "%";
+        
+        // Mise à jour de la barre de répartition
+        const bV = document.getElementById('bar-vert');
+        const bR = document.getElementById('bar-rouge');
+        
+        bV.style.width = pourcent + "%";
+        bV.innerText = pourcent > 10 ? pourcent + "%" : "";
+        
+        bR.style.width = (100 - pourcent) + "%";
+        bR.innerText = (100 - pourcent) > 10 ? (100 - pourcent) + "%" : "";
+        
+        document.getElementById('count-vert').innerText = nVerts + " jour(s) ✨";
+        document.getElementById('count-rouge').innerText = nRouges + " jour(s) 💧";
+    } else {
+        document.getElementById('score-bonheur').innerText = "--";
+        document.getElementById('bar-vert').style.width = "50%";
+        document.getElementById('bar-rouge').style.width = "50%";
+        document.getElementById('count-vert').innerText = "0 jour";
+        document.getElementById('count-rouge').innerText = "0 jour";
+    }
+}
 
         // MISSIONS
         window.ajouterObjectif = function(type) {
