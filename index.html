@@ -176,12 +176,6 @@
 
     <div id="real-reset-btn" class="btn-reset">Réinitialiser les données du mois</div>
 </div>
-                <div class="stat-card">
-                    <span class="stat-label">Majorité du mois 🏆</span>
-                    <span id="cause-majeure" class="stat-valeur">--</span>
-                    <span id="cause-sub" class="stat-sub">Aucune donnée</span>
-                </div>
-                <div id="real-reset-btn" class="btn-reset">Réinitialiser le mois</div>
             </div>
         </div>
     </section>
@@ -575,6 +569,36 @@ document.getElementById('btn-notif-enable').onclick = requestNotificationPermiss
         if(JSON.parse(localStorage.getItem(idInit))?.[dateAujourdhui.getDate()]) afficherFinal();
         afficherObjectifs();
     });
+    // --- AJOUTER TOUT EN BAS DU SCRIPT ---
+document.getElementById('btn-tab-grille').onclick = () => {
+    document.getElementById('grille-pixels').classList.remove('cache');
+    document.getElementById('nom-du-mois').classList.remove('cache');
+    document.getElementById('section-stats').classList.add('cache');
+    // On change le style des boutons pour voir lequel est actif
+    document.getElementById('btn-tab-grille').style.background = "var(--text)";
+    document.getElementById('btn-tab-grille').style.color = "var(--gris-bg)";
+    document.getElementById('btn-tab-stats').style.background = "#e5e5ea";
+    document.getElementById('btn-tab-stats').style.color = "#8e8e93";
+};
+
+document.getElementById('btn-tab-stats').onclick = () => {
+    document.getElementById('grille-pixels').classList.add('cache');
+    document.getElementById('nom-du-mois').classList.add('cache');
+    document.getElementById('section-stats').classList.remove('cache');
+    // On change le style des boutons
+    document.getElementById('btn-tab-stats').style.background = "var(--text)";
+    document.getElementById('btn-tab-stats').style.color = "var(--gris-bg)";
+    document.getElementById('btn-tab-grille').style.background = "#e5e5ea";
+    document.getElementById('btn-tab-grille').style.color = "#8e8e93";
+    
+    calculerStats(); // Lance le calcul des barres de tendance
+};
+    document.getElementById('real-reset-btn').onclick = () => {
+    if(confirm("Voulez-vous vraiment effacer les données de ce mois ?")) {
+        localStorage.removeItem(obtenirIdMois(vueMois, vueAnnee));
+        location.reload(); 
+    }
+};
 </script>
 
 </body>
