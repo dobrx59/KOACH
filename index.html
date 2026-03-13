@@ -8,6 +8,7 @@
         :root { 
             --vert: #A8E6CF; 
             --rouge: #FF8B94; 
+            --jaune: #FFEAA7;
             --gris-bg: #f2f2f7; 
             --text: #1c1c1e; 
             --card-bg: #ffffff;
@@ -45,18 +46,69 @@
 
         /* KOACH CORE */
         .ecran-accueil { display: flex; flex-direction: column; height: 100%; width: 100%; align-items: center; justify-content: flex-start; position: relative; text-align: center; }
-        .bouton-principal { flex: 1; width: 100%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-direction: column !important; }
-        .bouton-principal.vert { background-color: var(--vert); }
-        .bouton-principal.rouge { background-color: var(--rouge); }
-        .koala-wrapper { position: relative; width: 100px; height: 100px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; }
+        .choix-humeur-container { margin-top: 40px; width: 100%; padding: 0 20px 40px 20px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; }
+        .koala-wrapper { position: relative; width: 140px; height: 140px; margin-bottom: 18px; display: flex; align-items: center; justify-content: center; border-radius: 999px; box-shadow: 0 10px 25px rgba(0,0,0,0.18); }
+        .koala-wrapper.mood-good { background-color: var(--vert); }
+        .koala-wrapper.mood-neutral { background-color: var(--jaune); }
+        .koala-wrapper.mood-bad { background-color: var(--rouge); }
         .koala-img { width: 90px; height: 90px; object-fit: contain; }
+        .label-humeur { font-size: 18px; font-weight: 700; margin-top: 10px; }
+        .emoji-overlay { position: absolute; bottom: 10px; right: 14px; font-size: 22px; }
         .bounce { animation: bounce-koala 2s infinite; }
         @keyframes bounce-koala { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
         .sway { animation: sway-koala 3s infinite ease-in-out; }
         @keyframes sway-koala { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+        .float { animation: float-koala 3s infinite ease-in-out; }
+        @keyframes float-koala { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        .mood-cards-viewport { 
+            position: relative; 
+            width: 100%; 
+            max-width: 420px; 
+            height: 75vh; 
+            max-height: 560px;
+            margin-top: 8px; 
+            touch-action: pan-y; 
+        }
+        .mood-card { 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            width: 80vw; 
+            max-width: 420px; 
+            height: 70vh; 
+            max-height: 520px;
+            border-radius: 32px; 
+            padding: 24px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.18);
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+            cursor: pointer;
+        }
+        .mood-card-bad { background-color: var(--rouge); }
+        .mood-card-neutral { background-color: var(--jaune); }
+        .mood-card-good { background-color: var(--vert); }
+        .mood-card--center { 
+            transform: translate(-50%, -50%) scale(1); 
+            z-index: 3; 
+            opacity: 1;
+        }
+        .mood-card--left { 
+            transform: translate(calc(-50% - 40%), -50%) scale(0.9); 
+            z-index: 2; 
+            opacity: 0.9;
+        }
+        .mood-card--right { 
+            transform: translate(calc(-50% + 40%), -50%) scale(0.9); 
+            z-index: 2; 
+            opacity: 0.9;
+        }
         .grille { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; background: var(--card-bg); padding: 15px; border-radius: 20px; margin: 0 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .pixel { width: 32px; height: 32px; background: #eee; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; cursor: pointer; color: #333; }
         .pixel.vert { background-color: var(--vert) !important; color: #1c1c1e; }
+        .pixel.jaune { background-color: var(--jaune) !important; color: #1c1c1e; }
         .pixel.rouge { background-color: var(--rouge) !important; color: #1c1c1e; }
 
         /* ANALYSE & STATS */
@@ -71,10 +123,10 @@
         /* MISSIONS */
         .goal-group { width: 90%; max-width: 400px; margin: 0 auto 30px auto; }
         .group-title { font-size: 11px; font-weight: 700; color: #8e8e93; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-        .goal-item { background: var(--card-bg); padding: 16px; border-radius: 18px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .goal-item { background: var(--card-bg); padding: 16px; border-radius: 18px; margin-bottom: 10px; display: flex; flex-direction: column; align-items: stretch; gap: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
         .goal-text { font-weight: 600; font-size: 15px; display: block; }
         .goal-meta { font-size: 11px; color: #8e8e93; }
-        .goal-actions { display: flex; gap: 8px; }
+        .goal-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
         .btn-status { border: none; border-radius: 10px; padding: 8px; cursor: pointer; font-size: 14px; }
         .btn-done { background: #e8f5e9; color: #2e7d32; }
         .btn-fail { background: #ffebee; color: #c62828; }
@@ -85,7 +137,18 @@
         .input-modern button, .input-modern-stack button { background: var(--text); color: var(--gris-bg); border: none; border-radius: 12px; width: 35px; height: 35px; cursor: pointer; }
 
         /* RÉGLAGES */
-        .setting-row { display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); padding: 16px; border-radius: 18px; margin-top: 10px; }
+        .setting-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: var(--card-bg); 
+            padding: 16px; 
+            border-radius: 18px; 
+            margin: 10px auto 0 auto;
+            width: 90%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
         .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; inset: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
@@ -96,7 +159,23 @@
         /* MODALES */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 6000; padding: 20px; }
         .modal-content { background: var(--card-bg); padding: 25px; border-radius: 28px; width: 100%; max-width: 350px; text-align: center; }
-        .btn-primary { width: 100%; padding: 16px; border-radius: 18px; border: none; background: var(--vert); font-weight: bold; cursor: pointer; font-size: 16px; color: #1c1c1e; }
+        .btn-primary { 
+            width: 100%; 
+            padding: 16px; 
+            border-radius: 18px; 
+            border: none; 
+            background: var(--vert); 
+            font-weight: bold; 
+            cursor: pointer; 
+            font-size: 16px; 
+            color: #1c1c1e; 
+            transition: transform 0.18s cubic-bezier(0.18, 0.89, 0.32, 1.28), box-shadow 0.18s ease-out; 
+            box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+        }
+        .btn-primary--pressed {
+            transform: scale(0.94);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.24);
+        }
         
         .btn-raison { flex: 1; padding: 16px; border: none; border-radius: 15px; background: var(--card-bg); font-size: 16px; font-weight: 600; cursor: pointer; text-align: left; color: var(--text); }
         .btn-suppr { background: var(--card-bg); border: none; border-radius: 15px; padding: 0 12px; color: var(--rouge); cursor: pointer; }
@@ -122,20 +201,32 @@
 <div id="app">
     <section id="section-koach" class="tab-content">
         <div id="ecran-choix" class="ecran-accueil fondue">
-            <button class="bouton-principal vert" onclick="choisirHumeur('content')">
-                <div class="koala-wrapper bounce">
-                    <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Koala/3D/koala_3d.png" class="koala-img" alt="Koala Content">
-                    <span class="emoji-overlay">✨</span>
+            <div class="choix-humeur-container">
+                <div class="mood-cards-viewport" id="mood-cards-viewport">
+                    <div class="mood-card mood-card-bad mood-card--left" data-mood="pas-content">
+                        <div class="koala-wrapper mood-bad sway">
+                            <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Koala/3D/koala_3d.png" class="koala-img" alt="Koala Triste">
+                            <span class="emoji-overlay">💧</span>
+                        </div>
+                        <span class="label-humeur">C'est dur...</span>
+                    </div>
+                    <div class="mood-card mood-card-neutral mood-card--center" data-mood="neutre">
+                        <div class="koala-wrapper mood-neutral float">
+                            <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Koala/3D/koala_3d.png" class="koala-img" alt="Koala Neutre">
+                            <span class="emoji-overlay">😐</span>
+                        </div>
+                        <span class="label-humeur">Journée normale</span>
+                    </div>
+                    <div class="mood-card mood-card-good mood-card--right" data-mood="content">
+                        <div class="koala-wrapper mood-good bounce">
+                            <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Koala/3D/koala_3d.png" class="koala-img" alt="Koala Content">
+                            <span class="emoji-overlay">✨</span>
+                        </div>
+                        <span class="label-humeur">Trop bien !</span>
+                    </div>
                 </div>
-                <span class="label-humeur">Trop bien !</span>
-            </button>
-            <button class="bouton-principal rouge" onclick="choisirHumeur('pas-content')">
-                <div class="koala-wrapper sway">
-                    <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Koala/3D/koala_3d.png" class="koala-img koala-triste" alt="Koala Triste">
-                    <span class="emoji-overlay triste">💧</span>
-                </div>
-                <span class="label-humeur">C'est dur...</span>
-            </button>
+                <button id="btn-valider-humeur" class="btn-primary" style="margin-top: 32px; margin-bottom: 8px; max-width: 360px; font-size: 18px; padding: 18px;">Valider cette humeur</button>
+            </div>
         </div>
 
         <div id="ecran-raisons" class="ecran-accueil cache">
@@ -166,6 +257,7 @@
                     <span id="score-bonheur" class="stat-valeur">--</span>
                     <div class="repartition-bar">
                         <div id="bar-vert" style="height:100%; background:var(--vert);"></div>
+                        <div id="bar-jaune" style="height:100%; background:var(--jaune);"></div>
                         <div id="bar-rouge" style="height:100%; background:var(--rouge);"></div>
                     </div>
                 </div>
@@ -281,6 +373,7 @@
         let mesCauses = JSON.parse(localStorage.getItem('mesCauses')) || ["🏢 Travail", "❤️ Amour", "🥗 Santé", "🎮 Loisirs"];
         let humeurDuJour = "";
         let causeChoisie = "";
+        let humeurSelectionnee = "neutre";
 
         const obtenirIdMois = (m, a) => `histo-${a}-${m}`;
 
@@ -310,11 +403,122 @@
             if (target === 'goals') afficherObjectifs();
         };
 
+        // STACKED MOOD CARDS (SWIPE + TAP)
+        const moodViewport = document.getElementById('mood-cards-viewport');
+        const moodCards = Array.from(document.querySelectorAll('.mood-card'));
+        const btnValiderHumeur = document.getElementById('btn-valider-humeur');
+
+        let currentMoodIndex = 1; // 0: bad, 1: neutral, 2: good
+
+        function updateConfirmButtonStyle() {
+            if (!btnValiderHumeur) return;
+            let bg = 'var(--jaune)';
+            if (humeurSelectionnee === 'content') bg = 'var(--vert)';
+            else if (humeurSelectionnee === 'neutre') bg = 'var(--jaune)';
+            else bg = 'var(--rouge)';
+            btnValiderHumeur.style.background = bg;
+            btnValiderHumeur.style.color = '#1c1c1e';
+        }
+
+        function applyMoodIndex(index) {
+            if (!moodViewport || moodCards.length !== 3) return;
+            currentMoodIndex = Math.max(0, Math.min(2, index));
+
+            const leftIndex = (currentMoodIndex + 2) % 3;
+            const rightIndex = (currentMoodIndex + 1) % 3;
+
+            moodCards.forEach((card, i) => {
+                card.classList.remove('mood-card--left', 'mood-card--center', 'mood-card--right');
+                if (i === currentMoodIndex) card.classList.add('mood-card--center');
+                else if (i === leftIndex) card.classList.add('mood-card--left');
+                else if (i === rightIndex) card.classList.add('mood-card--right');
+            });
+
+            humeurSelectionnee = moodCards[currentMoodIndex]?.dataset.mood || 'neutre';
+            updateConfirmButtonStyle();
+        }
+
+        applyMoodIndex(currentMoodIndex);
+
+        // Tap on peeking cards to switch
+        moodCards.forEach((card, index) => {
+            card.addEventListener('click', () => {
+                if (index !== currentMoodIndex) {
+                    applyMoodIndex(index);
+                }
+            });
+        });
+
+        // Swipe center card / stack to navigate
+        if (moodViewport && moodCards.length === 3) {
+            let startX = 0;
+            let isSwiping = false;
+            let lastDeltaX = 0;
+            const thresholdPx = 50;
+
+            const getX = (e) => ('touches' in e ? e.touches[0].clientX : e.clientX);
+
+            const onStart = (e) => {
+                isSwiping = true;
+                startX = getX(e);
+                lastDeltaX = 0;
+            };
+
+            const onMove = (e) => {
+                if (!isSwiping) return;
+                const currentX = getX(e);
+                lastDeltaX = currentX - startX;
+            };
+
+            const onEnd = () => {
+                if (!isSwiping) return;
+                isSwiping = false;
+                if (Math.abs(lastDeltaX) > thresholdPx) {
+                    if (lastDeltaX < 0) applyMoodIndex(currentMoodIndex + 1);
+                    else applyMoodIndex(currentMoodIndex - 1);
+                }
+            };
+
+            moodViewport.addEventListener('touchstart', onStart, { passive: true });
+            moodViewport.addEventListener('touchmove', onMove, { passive: true });
+            moodViewport.addEventListener('touchend', onEnd);
+            moodViewport.addEventListener('mousedown', onStart);
+            window.addEventListener('mousemove', onMove);
+            window.addEventListener('mouseup', onEnd);
+        }
+
+        if (btnValiderHumeur) {
+            btnValiderHumeur.onclick = () => {
+                window.choisirHumeur(humeurSelectionnee);
+            };
+
+            const pressClass = 'btn-primary--pressed';
+            const handleDown = () => {
+                btnValiderHumeur.classList.add(pressClass);
+            };
+            const handleUp = () => {
+                btnValiderHumeur.classList.remove(pressClass);
+            };
+
+            btnValiderHumeur.addEventListener('mousedown', handleDown);
+            btnValiderHumeur.addEventListener('touchstart', handleDown, { passive: true });
+            window.addEventListener('mouseup', handleUp);
+            window.addEventListener('touchend', handleUp);
+        }
+
         // KOACH LOGIC
         window.choisirHumeur = function(h) {
             humeurDuJour = h;
             causeChoisie = "";
-            confetti({ particleCount: 30, colors: h === 'content' ? ['#A8E6CF'] : ['#FF8B94'], origin: { y: 0.7 } });
+            let colors;
+            if (h === 'content') {
+                colors = ['#A8E6CF'];
+            } else if (h === 'neutre') {
+                colors = ['#FFEAA7'];
+            } else {
+                colors = ['#FF8B94'];
+            }
+            confetti({ particleCount: 30, colors, origin: { y: 0.7 } });
             document.getElementById('modal-note').classList.remove('cache');
         };
 
@@ -340,7 +544,15 @@
             histo[jS] = { humeur: humeurDuJour, raison: causeChoisie, note: note };
             localStorage.setItem(obtenirIdMois(mS, aS), JSON.stringify(histo));
             document.getElementById('modal-note').classList.add('cache');
-            confetti({ particleCount: 150, spread: 70, colors: humeurDuJour === 'content' ? ['#A8E6CF'] : ['#FF8B94'] });
+            let bigColors;
+            if (humeurDuJour === 'content') {
+                bigColors = ['#A8E6CF'];
+            } else if (humeurDuJour === 'neutre') {
+                bigColors = ['#FFEAA7'];
+            } else {
+                bigColors = ['#FF8B94'];
+            }
+            confetti({ particleCount: 150, spread: 70, colors: bigColors });
             jourEnModification = null;
             afficherFinal();
         };
@@ -367,7 +579,18 @@
 
             for(let i=1; i<=nbJours; i++) {
                 const p = document.createElement('div');
-                p.className = "pixel " + (histo[i] ? (histo[i].humeur === 'content' ? 'vert' : 'rouge') : '');
+                let moodClass = '';
+                if (histo[i]) {
+                    if (histo[i].humeur === 'content') {
+                        moodClass = 'vert';
+                    } else if (histo[i].humeur === 'neutre') {
+                        moodClass = 'jaune';
+                    } else {
+                        // compatibilité : tout ce qui n'est pas "content" ou "neutre" est considéré comme rouge ("pas-content")
+                        moodClass = 'rouge';
+                    }
+                }
+                p.className = "pixel " + moodClass;
                 p.innerText = i;
 
                 p.onclick = () => {
@@ -376,7 +599,7 @@
 
                     jourEnModification = i; 
                     if(histo[i]) {
-                        document.getElementById('modal-emoji').innerText = histo[i].humeur === 'content' ? '😊' : '😕';
+                        document.getElementById('modal-emoji').innerText = histo[i].humeur === 'content' ? '😊' : (histo[i].humeur === 'neutre' ? '😐' : '😕');
                         document.getElementById('modal-date').innerText = i + " " + new Date(vueAnnee, vueMois).toLocaleDateString('fr-FR', {month:'long'});
                         document.getElementById('modal-raison').innerHTML = `<strong>${histo[i].raison}</strong>` + (histo[i].note ? `<br>"${histo[i].note}"` : "");
                         document.getElementById('modal-detail').classList.remove('cache');
@@ -398,11 +621,19 @@
             document.getElementById('streak-count').innerText = streak + " jours";
 
             if(jours.length > 0) {
-                const contents = jours.filter(j => j.humeur === 'content').length;
-                const pourcentage = Math.round((contents / jours.length) * 100);
+                const verts = jours.filter(j => j.humeur === 'content').length;
+                const jaunes = jours.filter(j => j.humeur === 'neutre').length;
+                const total = jours.length;
+                const pourcentage = Math.round((verts / total) * 100);
                 document.getElementById('score-bonheur').innerText = pourcentage + "%";
-                document.getElementById('bar-vert').style.width = pourcentage + "%";
-                document.getElementById('bar-rouge').style.width = (100 - pourcentage) + "%";
+
+                const pctVert = Math.round((verts / total) * 100);
+                const pctJaune = Math.round((jaunes / total) * 100);
+                const pctRouge = Math.max(0, 100 - pctVert - pctJaune);
+
+                document.getElementById('bar-vert').style.width = pctVert + "%";
+                document.getElementById('bar-jaune').style.width = pctJaune + "%";
+                document.getElementById('bar-rouge').style.width = pctRouge + "%";
             } else {
                 document.getElementById('score-bonheur').innerText = "--";
             }
