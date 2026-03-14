@@ -105,15 +105,7 @@
             z-index: 2; 
             opacity: 0.9;
         }
-        .grille { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; background: var(--card-bg); padding: 15px; border-radius: 20px; margin: 0 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .pixel { width: 32px; height: 32px; background: #eee; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; cursor: pointer; color: #333; }
-        .pixel.vert { background-color: var(--vert) !important; color: #1c1c1e; }
-        .pixel.jaune { background-color: var(--jaune) !important; color: #1c1c1e; }
-        .pixel.rouge { background-color: var(--rouge) !important; color: #1c1c1e; }
-
-        /* ANALYSE & STATS */
-        .stats-container { width: 90%; max-width: 350px; display: flex; flex-direction: column; gap: 12px; margin: 0 auto; }
-        .stat-card { background: var(--card-bg); padding: 15px; border-radius: 18px; text-align: left; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        /* ANALYSE & STATS — base (overridden in GLOBAL for section-stats) */
         .stat-label { font-size: 10px; font-weight: bold; color: #8e8e93; text-transform: uppercase; letter-spacing: 0.5px; }
         .stat-valeur { font-size: 22px; font-weight: bold; display: block; margin-top: 4px; }
         .stat-sub { font-size: 13px; color: #8e8e93; margin-top: 2px; display: block; }
@@ -137,18 +129,6 @@
         .input-modern button, .input-modern-stack button { background: var(--text); color: var(--gris-bg); border: none; border-radius: 12px; width: 35px; height: 35px; cursor: pointer; }
 
         /* RÉGLAGES */
-        .setting-row { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            background: var(--card-bg); 
-            padding: 16px; 
-            border-radius: 18px; 
-            margin: 10px auto 0 auto;
-            width: 90%;
-            max-width: 400px;
-            box-sizing: border-box;
-        }
         .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; inset: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
@@ -185,9 +165,302 @@
         .btn-reset { margin-top: 15px; font-size: 11px; color: #bbb; text-decoration: underline; cursor: pointer; text-align: center; }
         .fleche-retour { position: absolute; top: 40px; left: 15px; font-size: 26px; color: #8e8e93; cursor: pointer; padding: 10px; z-index: 100; }
 
-        /* TAB CONTENT */
-        .tab-content { width: 100%; height: 100%; overflow-y: auto; }
+        /* GLOBAL PAGE LAYOUT */
+        .tab-content {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 20px 100px;
+            box-sizing: border-box;
+        }
+        .page-container {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+        .page-header {
+            font-size: 22px;
+            font-weight: 700;
+            text-align: center;
+            margin: 0 0 24px 0;
+            width: 100%;
+        }
         #section-koach { overflow: hidden; }
+
+        /* CALENDRIER — larger centered grid */
+        .ecran-confirmation-wrap {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 0 24px;
+        }
+        .actions-finales { display: flex; gap: 12px; justify-content: center; margin-bottom: 16px; }
+        /* Calendar header with theme button */
+        .calendar-header-wrap { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+        .calendar-header-wrap .page-header { margin: 0; }
+        .btn-calendar-theme {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: var(--card-bg);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            font-size: 20px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-calendar-theme:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .calendar-theme-picker {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-top: 8px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+            padding: 14px;
+            z-index: 2000;
+            min-width: 260px;
+            display: none;
+        }
+        .calendar-theme-picker.open { display: block; }
+        .calendar-theme-picker .picker-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+        .calendar-theme-picker .picker-row:last-of-type { margin-bottom: 0; }
+        .theme-btn {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            border: 2px solid rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.15s, border-color 0.15s;
+            flex-shrink: 0;
+        }
+        .theme-btn:hover { transform: scale(1.1); border-color: rgba(0,0,0,0.25); }
+        .theme-btn.active { border-color: var(--text); border-width: 3px; }
+        .theme-btn[data-theme="koach"] { background: linear-gradient(135deg, #8B6914, #6B4423); }
+        .theme-btn[data-theme="ocean"] { background: linear-gradient(135deg, #1e3a5f, #0d2137); }
+        .theme-btn[data-theme="sunset"] { background: linear-gradient(135deg, #e07c4c, #c44569); }
+        .theme-btn[data-theme="forest"] { background: linear-gradient(135deg, #2d5a27, #1a3520); }
+        .theme-btn[data-theme="minimal"] { background: linear-gradient(135deg, #e8e8ed, #d1d1d6); }
+        .theme-btn[data-theme="galaxy"] { background: linear-gradient(135deg, #4a2c6f, #2d1b4e); }
+        .theme-btn[data-theme="custom"] { background: linear-gradient(90deg, red, yellow, lime, cyan, blue, magenta, red); }
+        .hue-slider-wrap { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+        .hue-slider-wrap label { font-size: 11px; color: #8e8e93; display: block; margin-bottom: 6px; }
+        .hue-slider-track {
+            height: 14px;
+            border-radius: 999px;
+            position: relative;
+            cursor: pointer;
+        }
+        .hue-slider-native {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 14px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #ff0000, #ff8800, #ffdd00, #88ff00, #00ff88, #00ffcc, #0088ff, #4400ff, #aa00ff, #ff0088, #ff0000);
+            outline: none;
+            cursor: pointer;
+        }
+        .hue-slider-native::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid rgba(0,0,0,0.25);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+            cursor: grab;
+        }
+        .hue-slider-native::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid rgba(0,0,0,0.25);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+            cursor: grab;
+        }
+        /* Calendar frame — base + theme variants */
+        .grille-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 440px;
+            margin: 0 auto 24px;
+            padding: 14px;
+            border-radius: 28px;
+            background: linear-gradient(145deg, #6B4423 0%, #8B6914 25%, #C4A035 50%, #A67C52 75%, #5D3A1A 100%);
+            box-shadow: 0 8px 28px rgba(101, 67, 33, 0.4), 0 2px 8px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        body.dark-mode .grille-wrapper[data-calendar-theme="koach"] {
+            background: linear-gradient(145deg, #4A3016 0%, #6B4423 30%, #8B6914 60%, #5D3A1A 100%);
+            box-shadow: 0 8px 28px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+        }
+        .grille-wrapper[data-calendar-theme="ocean"] {
+            background: linear-gradient(145deg, #0d2137 0%, #1e3a5f 40%, #224477 70%, #0d2137 100%);
+            box-shadow: 0 8px 28px rgba(15, 50, 90, 0.5), inset 0 1px 0 rgba(255,255,255,0.12);
+        }
+        .grille-wrapper[data-calendar-theme="sunset"] {
+            background: linear-gradient(145deg, #b83b5e 0%, #e07c4c 40%, #f4a261 70%, #c44569 100%);
+            box-shadow: 0 8px 28px rgba(180, 70, 60, 0.4), inset 0 1px 0 rgba(255,255,255,0.25);
+        }
+        .grille-wrapper[data-calendar-theme="forest"] {
+            background: linear-gradient(145deg, #1a3520 0%, #2d5a27 35%, #3d7c2f 70%, #1a3520 100%);
+            box-shadow: 0 8px 28px rgba(30, 60, 25, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+        .grille-wrapper[data-calendar-theme="minimal"] {
+            background: transparent;
+            padding: 2px;
+            box-shadow: 0 0 0 2px #d1d1d6;
+        }
+        body.dark-mode .grille-wrapper[data-calendar-theme="minimal"] { box-shadow: 0 0 0 2px #3a3a3c; }
+        .grille-wrapper[data-calendar-theme="minimal"] .frame-corner { display: none; }
+        .grille-wrapper[data-calendar-theme="minimal"] .grille { border-radius: 24px; }
+        .grille-wrapper[data-calendar-theme="galaxy"] {
+            background: linear-gradient(145deg, #2d1b4e 0%, #4a2c6f 40%, #6b4a9e 70%, #2d1b4e 100%);
+            box-shadow: 0 8px 32px rgba(75, 40, 120, 0.5), 0 0 40px rgba(100, 60, 180, 0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+        .grille-wrapper .frame-corner {
+            position: absolute;
+            font-size: 20px;
+            line-height: 1;
+            opacity: 0.85;
+            pointer-events: none;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        .grille-wrapper[data-calendar-theme="minimal"] .frame-corner { display: none; }
+        .grille-wrapper .frame-corner.frame-tl { top: 4px; left: 6px; }
+        .grille-wrapper .frame-corner.frame-tr { top: 4px; right: 6px; transform: scaleX(-1); }
+        .grille-wrapper .frame-corner.frame-bl { bottom: 4px; left: 6px; transform: scaleY(-1); }
+        .grille-wrapper .frame-corner.frame-br { bottom: 4px; right: 6px; transform: scale(-1); }
+        .grille-wrapper[data-calendar-theme="custom"] .frame-corner { opacity: 0.9; }
+        .grille {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 24px;
+            margin: 0 auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8);
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .pixel {
+            width: 100%;
+            aspect-ratio: 1;
+            min-width: 0;
+            min-height: 36px;
+            margin: 0 auto;
+            background: #e8e8ed;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #333;
+        }
+        .pixel.vert { background-color: var(--vert) !important; color: #1c1c1e; }
+        .pixel.jaune { background-color: var(--jaune) !important; color: #1c1c1e; }
+        .pixel.rouge { background-color: var(--rouge) !important; color: #1c1c1e; }
+
+        /* ANALYSE — centered, wider stat cards */
+        .stats-container {
+            width: 100%;
+            max-width: 440px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin: 0 auto;
+            padding: 0;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            padding: 18px;
+            border-radius: 18px;
+            text-align: left;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* MISSIONS — centered content */
+        .section-goals-inner {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        .goal-group {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto 28px;
+        }
+        .goal-group:last-of-type { margin-bottom: 0; }
+
+        /* RÉGLAGES — consistent rows */
+        .section-settings-inner {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 16px 18px;
+            border-radius: 18px;
+            margin: 0 auto 12px;
+            width: 100%;
+            max-width: 480px;
+            box-sizing: border-box;
+        }
+        .setting-row:last-of-type { margin-bottom: 0; }
+        .settings-note {
+            width: 100%;
+            max-width: 480px;
+            margin: 12px auto 16px;
+            padding: 12px 0;
+            font-size: 12px;
+            color: #8e8e93;
+            box-sizing: border-box;
+        }
+        .settings-footer-card {
+            width: 100%;
+            max-width: 480px;
+            margin: 16px auto 0;
+            box-sizing: border-box;
+        }
+
+        @media (min-width: 600px) {
+            .page-container,
+            .section-goals-inner,
+            .section-settings-inner,
+            .ecran-confirmation-wrap { max-width: 520px; }
+            .grille-wrapper,
+            .stats-container { max-width: 480px; }
+            .goal-group { max-width: 520px; }
+            .setting-row,
+            .settings-note,
+            .settings-footer-card { max-width: 520px; }
+            .tab-content { padding: 32px 24px 100px; }
+        }
     </style>
 </head>
 <body>
@@ -240,14 +513,40 @@
         </div>
 
         <div id="ecran-confirmation" class="ecran-accueil cache">
-            <div class="actions-finales" style="margin-top: 40px; display:flex; gap:10px; justify-content:center;">
-                <button id="btn-tab-grille" class="bouton-onglet">Mon Mois</button>
-                <button id="btn-tab-stats" class="bouton-onglet">Analyse</button>
-            </div>
-            <h2 id="nom-du-mois" style="text-align: center; width:100%;">---</h2>
-            <div id="grille-pixels" class="grille fondue"></div>
-            
-            <div id="section-stats" class="stats-container cache fondue">
+            <div class="ecran-confirmation-wrap">
+                <div class="actions-finales">
+                    <button id="btn-tab-grille" class="bouton-onglet">Mon Mois</button>
+                    <button id="btn-tab-stats" class="bouton-onglet">Analyse</button>
+                </div>
+                <div class="calendar-header-wrap" style="position: relative;">
+                    <h2 id="nom-du-mois" class="page-header">---</h2>
+                    <button type="button" class="btn-calendar-theme" id="btn-calendar-theme" aria-label="Thème du calendrier">🎨</button>
+                    <div id="calendar-theme-picker" class="calendar-theme-picker">
+                        <div class="picker-row">
+                            <button type="button" class="theme-btn" data-theme="koach" title="Koach"></button>
+                            <button type="button" class="theme-btn" data-theme="ocean" title="Ocean"></button>
+                            <button type="button" class="theme-btn" data-theme="sunset" title="Sunset"></button>
+                            <button type="button" class="theme-btn" data-theme="forest" title="Forest"></button>
+                            <button type="button" class="theme-btn" data-theme="minimal" title="Minimal"></button>
+                            <button type="button" class="theme-btn" data-theme="galaxy" title="Galaxy"></button>
+                            <button type="button" class="theme-btn" data-theme="custom" title="Custom"></button>
+                        </div>
+                        <div class="hue-slider-wrap" id="hue-slider-wrap" style="display: none;">
+                            <label>Personnalisé</label>
+                            <div class="hue-slider-track">
+                                <input type="range" id="hue-slider-input" min="0" max="360" value="200" class="hue-slider-native">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grille-wrapper" id="grille-wrapper" data-calendar-theme="koach">
+                    <span class="frame-corner frame-tl" aria-hidden="true">🌿</span>
+                    <span class="frame-corner frame-tr" aria-hidden="true">🌿</span>
+                    <span class="frame-corner frame-bl" aria-hidden="true">🍃</span>
+                    <span class="frame-corner frame-br" aria-hidden="true">🍃</span>
+                    <div id="grille-pixels" class="grille fondue"></div>
+                </div>
+                <div id="section-stats" class="stats-container cache fondue">
                 <div class="stat-card">
                     <span class="stat-label">Série actuelle 🔥</span>
                     <span id="streak-count" class="stat-valeur">--</span>
@@ -262,12 +561,14 @@
                     </div>
                 </div>
                 <div id="real-reset-btn" class="btn-reset">Réinitialiser le mois</div>
+                </div>
             </div>
         </div>
     </section>
 
-    <section id="section-goals" class="tab-content cache" style="padding: 25px 20px;">
-        <h1 style="text-align: left; width: 100%; margin-bottom: 20px;">Missions 🎯</h1>
+    <section id="section-goals" class="tab-content cache">
+        <div class="section-goals-inner">
+        <h1 class="page-header">Missions 🎯</h1>
         <div class="goal-group">
             <h3 class="group-title">MA JOURNÉE</h3>
             <div id="liste-goals-du-jour"></div>
@@ -287,10 +588,12 @@
                 </div>
             </div>
         </div>
+        </div>
     </section>
 
-    <section id="section-settings" class="tab-content cache" style="padding: 25px 20px;">
-        <h1 style="text-align: left; width: 100%;">Réglages ⚙️</h1>
+    <section id="section-settings" class="tab-content cache">
+        <div class="section-settings-inner">
+        <h1 class="page-header">Réglages ⚙️</h1>
         <div class="setting-row">
             <span>Mode Sombre 🌙</span>
             <label class="switch">
@@ -302,13 +605,13 @@
             <span>Rappels quotidiens 🔔</span>
             <button id="btn-notif-enable" style="background: var(--vert); border: none; border-radius: 10px; padding: 8px 15px; font-weight: bold; cursor: pointer;">Activer</button>
         </div>
-        <div style="padding: 10px; font-size: 11px; color: #8e8e93;">
+        <div class="settings-note">
             Alertes à 8h (Setup), 20h (Check-up) et 21h (Bilan).
         </div>
-        
-        <div class="stat-card" style="width:100%; margin-top:20px; box-sizing: border-box;">
+        <div class="stat-card settings-footer-card">
             <p><strong>KOACH v2.0</strong> 🐨</p>
             <p style="color:#8e8e93; font-size:14px;">Ton compagnon de route quotidien.</p>
+        </div>
         </div>
     </section>
 </div>
@@ -402,6 +705,73 @@
             element.classList.add('active');
             if (target === 'goals') afficherObjectifs();
         };
+
+        // CALENDAR THEME PICKER
+        const grilleWrapper = document.getElementById('grille-wrapper');
+        const btnCalendarTheme = document.getElementById('btn-calendar-theme');
+        const calendarThemePicker = document.getElementById('calendar-theme-picker');
+        const hueSliderWrap = document.getElementById('hue-slider-wrap');
+        const hueSliderInput = document.getElementById('hue-slider-input');
+
+        let calendarTheme = localStorage.getItem('calendarTheme') || 'koach';
+        let calendarCustomHue = parseInt(localStorage.getItem('calendarCustomHue'), 10) || 200;
+        if (isNaN(calendarCustomHue)) calendarCustomHue = 200;
+
+        function applyCalendarTheme(theme, hue) {
+            if (!grilleWrapper) return;
+            grilleWrapper.setAttribute('data-calendar-theme', theme);
+            if (theme === 'custom') {
+                const h = typeof hue === 'number' ? hue : calendarCustomHue;
+                const sat = 55;
+                const light = 32;
+                grilleWrapper.style.background = `linear-gradient(145deg, hsl(${h}, ${sat}%, ${light - 8}%), hsl(${h}, ${sat}%, ${light}%), hsl(${h}, ${sat}%, ${light + 10}%))`;
+                grilleWrapper.style.boxShadow = `0 8px 28px hsla(${h}, 50%, 20%, 0.4), inset 0 1px 0 rgba(255,255,255,0.15)`;
+            } else {
+                grilleWrapper.style.background = '';
+                grilleWrapper.style.boxShadow = '';
+            }
+            document.querySelectorAll('.calendar-theme-picker .theme-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-theme') === theme);
+            });
+            if (hueSliderWrap) hueSliderWrap.style.display = theme === 'custom' ? 'block' : 'none';
+            if (hueSliderInput) {
+                hueSliderInput.value = typeof hue === 'number' ? hue : calendarCustomHue;
+            }
+        }
+
+        if (btnCalendarTheme && calendarThemePicker) {
+            btnCalendarTheme.addEventListener('click', (e) => {
+                e.stopPropagation();
+                calendarThemePicker.classList.toggle('open');
+            });
+            document.addEventListener('click', () => calendarThemePicker.classList.remove('open'));
+            calendarThemePicker.addEventListener('click', (e) => e.stopPropagation());
+        }
+
+        document.querySelectorAll('.calendar-theme-picker .theme-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const theme = btn.getAttribute('data-theme');
+                calendarTheme = theme;
+                localStorage.setItem('calendarTheme', theme);
+                if (theme === 'custom') {
+                    applyCalendarTheme('custom', calendarCustomHue);
+                } else {
+                    applyCalendarTheme(theme);
+                }
+            });
+        });
+
+        if (hueSliderInput) {
+            hueSliderInput.value = calendarCustomHue;
+            hueSliderInput.addEventListener('input', () => {
+                const hue = parseInt(hueSliderInput.value, 10);
+                calendarCustomHue = hue;
+                localStorage.setItem('calendarCustomHue', String(hue));
+                if (calendarTheme === 'custom') applyCalendarTheme('custom', hue);
+            });
+        }
+
+        applyCalendarTheme(calendarTheme, calendarTheme === 'custom' ? calendarCustomHue : null);
 
         // STACKED MOOD CARDS (SWIPE + TAP)
         const moodViewport = document.getElementById('mood-cards-viewport');
